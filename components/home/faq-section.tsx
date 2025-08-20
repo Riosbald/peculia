@@ -5,6 +5,7 @@ import { motion, useAnimation, useInView, AnimatePresence } from "framer-motion"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { HelpCircle, Sparkles } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { SectionHeader } from "@/components/ui/section-header"
 
 const faqs = [
   {
@@ -121,31 +122,12 @@ export default function FAQSection() {
         ))}
 
       <div className="container mx-auto px-4 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          viewport={{ once: true }}
-          className="text-center max-w-3xl mx-auto mb-16"
-        >
-          <div className="inline-flex items-center mb-3 bg-green-500/10 px-4 py-1 rounded-full">
-            <HelpCircle className="h-4 w-4 text-green-500 mr-2" />
-            <span className="text-green-500 text-sm font-medium">Common Questions</span>
-          </div>
-          <h2 className="text-3xl md:text-5xl font-bold text-primary mb-4 font-mono">
-            <span className="relative">
-              Frequently Asked Questions
-              <motion.span
-                className="absolute -bottom-2 left-0 h-1 bg-green-500/50 rounded-full"
-                initial={{ width: 0 }}
-                whileInView={{ width: "100%" }}
-                transition={{ duration: 1, delay: 0.5 }}
-                viewport={{ once: true }}
-              />
-            </span>
-          </h2>
-          <p className="text-lg text-primary/80">Everything you need to know about Peculia and how it works.</p>
-        </motion.div>
+        <SectionHeader
+          badge="Common Questions"
+          badgeIcon={<HelpCircle className="h-4 w-4" />}
+          title="Frequently Asked Questions"
+          description="Everything you need to know about Peculia and how it works."
+        />
 
         <div className="max-w-3xl mx-auto">
           <motion.div variants={containerVariants} initial="hidden" animate={controls} className="space-y-4">

@@ -2,13 +2,17 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
-import { Book, Terminal, Copy, CheckCircle } from "lucide-react"
+import { ChevronRight, Book, Code, Terminal, ArrowRight, Copy, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 
 export default function ApiReferenceClientPage() {
-  const [activeSection, setActiveSection] = useState("overview")
-  const [copiedCode, setCopiedCode] = useState<string | null>(null)
+  const [activeSection, setActiveSection] = useState("introduction")
+  const [activeTab, setActiveTab] = useState("predictions")
+  const [copied, setCopied] = useState<string | null>(null)
+  const router = useRouter()
 
   const scrollToSection = (sectionId: string) => {
     setActiveSection(sectionId)
@@ -20,30 +24,11 @@ export default function ApiReferenceClientPage() {
     }
   }
 
-  const copyToClipboard = (code: string, id: string) => {
-    navigator.clipboard.writeText(code)
-    setCopiedCode(id)
-    setTimeout(() => setCopiedCode(null), 2000)
+  const copyToClipboard = (text: string, id: string) => {
+    navigator.clipboard.writeText(text)
+    setCopied(id)
+    setTimeout(() => setCopied(null), 2000)
   }
-
-  const CodeBlock = ({ code, language, id }: { code: string; language: string; id: string }) => (
-    <div className="bg-[#1a1a1a] rounded-lg border border-white/10 overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-2 bg-[#0a0a0a] border-b border-white/10">
-        <span className="text-sm text-white/70">{language}</span>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => copyToClipboard(code, id)}
-          className="text-white/70 hover:text-white"
-        >
-          {copiedCode === id ? <CheckCircle size={16} /> : <Copy size={16} />}
-        </Button>
-      </div>
-      <pre className="p-4 text-sm text-white/90 overflow-x-auto">
-        <code>{code}</code>
-      </pre>
-    </div>
-  )
 
   return (
     <div className="min-h-screen bg-black pt-24 pb-16">
@@ -54,28 +39,76 @@ export default function ApiReferenceClientPage() {
             <div className="sticky top-24 bg-[#0a0a0a] rounded-lg border border-white/10 p-4">
               <h3 className="text-white font-medium mb-4">API Reference</h3>
               <nav className="space-y-1">
-                {[
-                  { id: "overview", label: "Overview" },
-                  { id: "authentication", label: "Authentication" },
-                  { id: "prediction-markets", label: "Prediction Markets" },
-                  { id: "token-pitching", label: "Token Pitching" },
-                  { id: "quest-system", label: "Quest System" },
-                  { id: "quadratic-funding", label: "Quadratic Funding" },
-                  { id: "webhooks", label: "Webhooks" },
-                  { id: "rate-limits", label: "Rate Limits" },
-                ].map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => scrollToSection(item.id)}
-                    className={`w-full flex items-center px-3 py-2 text-sm rounded-md transition-colors ${
-                      activeSection === item.id
-                        ? "bg-[#10b981]/10 text-[#10b981]"
-                        : "text-white/70 hover:text-white hover:bg-white/5"
-                    }`}
-                  >
-                    <span>{item.label}</span>
-                  </button>
-                ))}
+                <button
+                  onClick={() => scrollToSection("introduction")}
+                  className={`w-full flex items-center px-3 py-2 text-sm rounded-md transition-colors ${
+                    activeSection === "introduction"
+                      ? "bg-[#10b981]/10 text-[#10b981]"
+                      : "text-white/70 hover:text-white hover:bg-white/5"
+                  }`}
+                >
+                  <span>Introduction</span>
+                </button>
+                <button
+                  onClick={() => scrollToSection("authentication")}
+                  className={`w-full flex items-center px-3 py-2 text-sm rounded-md transition-colors ${
+                    activeSection === "authentication"
+                      ? "bg-[#10b981]/10 text-[#10b981]"
+                      : "text-white/70 hover:text-white hover:bg-white/5"
+                  }`}
+                >
+                  <span>Authentication</span>
+                </button>
+                <button
+                  onClick={() => scrollToSection("endpoints")}
+                  className={`w-full flex items-center px-3 py-2 text-sm rounded-md transition-colors ${
+                    activeSection === "endpoints"
+                      ? "bg-[#10b981]/10 text-[#10b981]"
+                      : "text-white/70 hover:text-white hover:bg-white/5"
+                  }`}
+                >
+                  <span>API Endpoints</span>
+                </button>
+                <button
+                  onClick={() => scrollToSection("rate-limits")}
+                  className={`w-full flex items-center px-3 py-2 text-sm rounded-md transition-colors ${
+                    activeSection === "rate-limits"
+                      ? "bg-[#10b981]/10 text-[#10b981]"
+                      : "text-white/70 hover:text-white hover:bg-white/5"
+                  }`}
+                >
+                  <span>Rate Limits</span>
+                </button>
+                <button
+                  onClick={() => scrollToSection("error-handling")}
+                  className={`w-full flex items-center px-3 py-2 text-sm rounded-md transition-colors ${
+                    activeSection === "error-handling"
+                      ? "bg-[#10b981]/10 text-[#10b981]"
+                      : "text-white/70 hover:text-white hover:bg-white/5"
+                  }`}
+                >
+                  <span>Error Handling</span>
+                </button>
+                <button
+                  onClick={() => scrollToSection("webhooks")}
+                  className={`w-full flex items-center px-3 py-2 text-sm rounded-md transition-colors ${
+                    activeSection === "webhooks"
+                      ? "bg-[#10b981]/10 text-[#10b981]"
+                      : "text-white/70 hover:text-white hover:bg-white/5"
+                  }`}
+                >
+                  <span>Webhooks</span>
+                </button>
+                <button
+                  onClick={() => scrollToSection("sdks")}
+                  className={`w-full flex items-center px-3 py-2 text-sm rounded-md transition-colors ${
+                    activeSection === "sdks"
+                      ? "bg-[#10b981]/10 text-[#10b981]"
+                      : "text-white/70 hover:text-white hover:bg-white/5"
+                  }`}
+                >
+                  <span>SDKs & Libraries</span>
+                </button>
               </nav>
 
               <div className="mt-6 pt-6 border-t border-white/10">
@@ -92,7 +125,7 @@ export default function ApiReferenceClientPage() {
                     href="/docs/getting-started"
                     className="flex items-center px-3 py-2 text-sm rounded-md text-white/70 hover:text-white hover:bg-white/5 transition-colors"
                   >
-                    <Book size={14} className="mr-2" />
+                    <ArrowRight size={14} className="mr-2" />
                     <span>Getting Started</span>
                   </Link>
                   <Link
@@ -113,21 +146,28 @@ export default function ApiReferenceClientPage() {
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
                 <h1 className="text-3xl font-bold text-white mb-6">API Reference</h1>
 
-                <section id="overview" className="mb-12">
-                  <h2 className="text-2xl font-semibold text-white mb-4">Overview</h2>
+                <section id="introduction" className="mb-12">
+                  <h2 className="text-2xl font-semibold text-white mb-4">Introduction</h2>
                   <div className="text-white/80 space-y-4">
                     <p>
-                      The Peculia API provides programmatic access to all platform features including prediction
-                      markets, token pitching, quest systems, and quadratic funding. Our REST API uses JSON for data
-                      exchange and follows standard HTTP conventions.
+                      The Peculia API allows developers to integrate with our platform and build applications that
+                      leverage our prediction markets, token pitching, quest system, and quadratic funding features.
                     </p>
-                    <div className="bg-[#1a1a1a] p-4 rounded-lg">
+                    <p>
+                      Our API follows RESTful principles and uses standard HTTP methods and status codes. All responses
+                      are returned in JSON format.
+                    </p>
+                    <div className="bg-[#1a1a1a] p-4 rounded-lg mt-4">
                       <h3 className="text-white font-medium mb-2">Base URL</h3>
-                      <code className="text-[#10b981]">https://api.peculia.com/v1</code>
-                    </div>
-                    <div className="bg-[#1a1a1a] p-4 rounded-lg">
-                      <h3 className="text-white font-medium mb-2">Content Type</h3>
-                      <code className="text-[#10b981]">application/json</code>
+                      <div className="flex items-center bg-black p-3 rounded-md font-mono text-sm">
+                        <code className="text-white/90 flex-1">https://api.peculia.io/v1</code>
+                        <button
+                          onClick={() => copyToClipboard("https://api.peculia.io/v1", "base-url")}
+                          className="text-white/50 hover:text-white/80 transition-colors"
+                        >
+                          {copied === "base-url" ? <Check size={16} className="text-[#10b981]" /> : <Copy size={16} />}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </section>
@@ -136,201 +176,612 @@ export default function ApiReferenceClientPage() {
                   <h2 className="text-2xl font-semibold text-white mb-4">Authentication</h2>
                   <div className="text-white/80 space-y-4">
                     <p>
-                      Peculia API uses API keys for authentication. You can generate an API key from your account
-                      dashboard. Include your API key in the Authorization header of your requests.
+                      All API requests require authentication using an API key. You can generate an API key in your
+                      account settings.
                     </p>
-                    <CodeBlock
-                      id="auth-example"
-                      language="bash"
-                      code={`curl -H "Authorization: Bearer YOUR_API_KEY" \\
-  https://api.peculia.com/v1/prediction-markets`}
-                    />
+                    <p>
+                      Include your API key in the <code className="bg-black px-1 py-0.5 rounded">Authorization</code>{" "}
+                      header of your requests:
+                    </p>
                     <div className="bg-[#1a1a1a] p-4 rounded-lg">
-                      <h3 className="text-white font-medium mb-2">Getting Your API Key</h3>
-                      <ol className="list-decimal pl-6 space-y-1 text-sm">
-                        <li>Log in to your Peculia account</li>
-                        <li>Navigate to Account Settings</li>
-                        <li>Go to the API section</li>
-                        <li>Click "Generate New API Key"</li>
-                        <li>Copy and securely store your key</li>
-                      </ol>
+                      <h3 className="text-white font-medium mb-2">Example Request with Authentication</h3>
+                      <div className="bg-black p-3 rounded-md font-mono text-sm overflow-x-auto">
+                        {`fetch('https://api.peculia.io/v1/predictions', {
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  }
+})`}
+                      </div>
+                    </div>
+                    <div className="bg-[#1a1a1a] p-4 rounded-lg mt-4">
+                      <h3 className="text-white font-medium mb-2">API Key Security</h3>
+                      <ul className="list-disc pl-6 space-y-2 text-sm">
+                        <li>Never expose your API key in client-side code or public repositories.</li>
+                        <li>Use environment variables to store your API key in your applications.</li>
+                        <li>Rotate your API keys periodically for enhanced security.</li>
+                        <li>You can revoke API keys at any time from your account settings.</li>
+                      </ul>
                     </div>
                   </div>
                 </section>
 
-                <section id="prediction-markets" className="mb-12">
-                  <h2 className="text-2xl font-semibold text-white mb-4">Prediction Markets</h2>
-                  <div className="text-white/80 space-y-6">
-                    <div>
-                      <h3 className="text-lg font-medium text-white mb-3">List Prediction Markets</h3>
-                      <p className="mb-3">Retrieve a list of all active prediction markets.</p>
-                      <CodeBlock
-                        id="list-markets"
-                        language="bash"
-                        code={`GET /prediction-markets
+                <section id="endpoints" className="mb-12">
+                  <h2 className="text-2xl font-semibold text-white mb-4">API Endpoints</h2>
+                  <div className="text-white/80 space-y-4">
+                    <p>
+                      The Peculia API is organized around the main features of our platform. Below are the available
+                      endpoints for each feature:
+                    </p>
 
-curl -H "Authorization: Bearer YOUR_API_KEY" \\
-  https://api.peculia.com/v1/prediction-markets`}
-                      />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-medium text-white mb-3">Create Prediction Market</h3>
-                      <p className="mb-3">Create a new prediction market.</p>
-                      <CodeBlock
-                        id="create-market"
-                        language="bash"
-                        code={`POST /prediction-markets
+                    <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6">
+                      <TabsList className="bg-[#1a1a1a] p-1 mb-6">
+                        <TabsTrigger
+                          value="predictions"
+                          className="data-[state=active]:bg-[#10b981]/10 data-[state=active]:text-[#10b981]"
+                        >
+                          Prediction Markets
+                        </TabsTrigger>
+                        <TabsTrigger
+                          value="tokens"
+                          className="data-[state=active]:bg-[#10b981]/10 data-[state=active]:text-[#10b981]"
+                        >
+                          Token Pitching
+                        </TabsTrigger>
+                        <TabsTrigger
+                          value="quests"
+                          className="data-[state=active]:bg-[#10b981]/10 data-[state=active]:text-[#10b981]"
+                        >
+                          Quest System
+                        </TabsTrigger>
+                        <TabsTrigger
+                          value="funding"
+                          className="data-[state=active]:bg-[#10b981]/10 data-[state=active]:text-[#10b981]"
+                        >
+                          Quadratic Funding
+                        </TabsTrigger>
+                      </TabsList>
 
-curl -X POST \\
-  -H "Authorization: Bearer YOUR_API_KEY" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "title": "Will Bitcoin reach $100k by end of 2024?",
-    "description": "Prediction about Bitcoin price target",
-    "endDate": "2024-12-31T23:59:59Z",
-    "category": "cryptocurrency"
-  }' \\
-  https://api.peculia.com/v1/prediction-markets`}
-                      />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-medium text-white mb-3">Place Bet</h3>
-                      <p className="mb-3">Place a bet on a prediction market.</p>
-                      <CodeBlock
-                        id="place-bet"
-                        language="bash"
-                        code={`POST /prediction-markets/{id}/bets
+                      <TabsContent value="predictions" className="space-y-6">
+                        <div className="border border-white/10 rounded-md overflow-hidden">
+                          <div className="bg-[#1a1a1a] px-4 py-3 border-b border-white/10 flex justify-between items-center">
+                            <h4 className="text-white font-medium">GET /predictions</h4>
+                            <span className="text-xs bg-green-500/20 text-green-500 px-2 py-1 rounded">GET</span>
+                          </div>
+                          <div className="p-4">
+                            <p className="mb-4">Retrieve a list of prediction markets.</p>
+                            <h5 className="text-white font-medium mt-3 mb-2">Parameters</h5>
+                            <table className="w-full text-sm">
+                              <thead>
+                                <tr className="border-b border-white/10">
+                                  <th className="text-left py-2 text-white/70">Name</th>
+                                  <th className="text-left py-2 text-white/70">Type</th>
+                                  <th className="text-left py-2 text-white/70">Description</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr className="border-b border-white/10">
+                                  <td className="py-2">limit</td>
+                                  <td className="py-2">integer</td>
+                                  <td className="py-2">Maximum number of results (default: 20)</td>
+                                </tr>
+                                <tr className="border-b border-white/10">
+                                  <td className="py-2">offset</td>
+                                  <td className="py-2">integer</td>
+                                  <td className="py-2">Number of results to skip (default: 0)</td>
+                                </tr>
+                                <tr>
+                                  <td className="py-2">status</td>
+                                  <td className="py-2">string</td>
+                                  <td className="py-2">Filter by status (active, resolved, all)</td>
+                                </tr>
+                              </tbody>
+                            </table>
 
-curl -X POST \\
-  -H "Authorization: Bearer YOUR_API_KEY" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "outcome": "yes",
-    "amount": "100",
-    "currency": "USDC"
-  }' \\
-  https://api.peculia.com/v1/prediction-markets/123/bets`}
-                      />
-                    </div>
+                            <h5 className="text-white font-medium mt-4 mb-2">Response</h5>
+                            <div className="bg-black p-3 rounded-md font-mono text-sm overflow-x-auto">
+                              {`{
+  "predictions": [
+    {
+      "id": "pred_123456",
+      "title": "Will ETH reach $5000 by end of 2023?",
+      "description": "This market predicts whether Ethereum...",
+      "created_at": "2023-05-15T10:30:00Z",
+      "expires_at": "2023-12-31T23:59:59Z",
+      "status": "active",
+      "yes_amount": "1250.5",
+      "no_amount": "850.75",
+      "total_volume": "2101.25"
+    },
+    // More prediction markets...
+  ],
+  "total": 156,
+  "limit": 20,
+  "offset": 0
+}`}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="border border-white/10 rounded-md overflow-hidden">
+                          <div className="bg-[#1a1a1a] px-4 py-3 border-b border-white/10 flex justify-between items-center">
+                            <h4 className="text-white font-medium">POST /predictions</h4>
+                            <span className="text-xs bg-blue-500/20 text-blue-500 px-2 py-1 rounded">POST</span>
+                          </div>
+                          <div className="p-4">
+                            <p className="mb-4">Create a new prediction market.</p>
+                            <h5 className="text-white font-medium mt-3 mb-2">Request Body</h5>
+                            <table className="w-full text-sm">
+                              <thead>
+                                <tr className="border-b border-white/10">
+                                  <th className="text-left py-2 text-white/70">Name</th>
+                                  <th className="text-left py-2 text-white/70">Type</th>
+                                  <th className="text-left py-2 text-white/70">Description</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr className="border-b border-white/10">
+                                  <td className="py-2">title</td>
+                                  <td className="py-2">string</td>
+                                  <td className="py-2">Title of the prediction market</td>
+                                </tr>
+                                <tr className="border-b border-white/10">
+                                  <td className="py-2">description</td>
+                                  <td className="py-2">string</td>
+                                  <td className="py-2">Detailed description of the prediction</td>
+                                </tr>
+                                <tr className="border-b border-white/10">
+                                  <td className="py-2">expires_at</td>
+                                  <td className="py-2">string</td>
+                                  <td className="py-2">ISO 8601 timestamp for expiration</td>
+                                </tr>
+                                <tr>
+                                  <td className="py-2">initial_liquidity</td>
+                                  <td className="py-2">number</td>
+                                  <td className="py-2">Initial liquidity amount (optional)</td>
+                                </tr>
+                              </tbody>
+                            </table>
+
+                            <h5 className="text-white font-medium mt-4 mb-2">Example Request</h5>
+                            <div className="bg-black p-3 rounded-md font-mono text-sm overflow-x-auto">
+                              {`fetch('https://api.peculia.io/v1/predictions', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    title: 'Will BTC reach $100k by end of 2024?',
+    description: 'This market predicts whether Bitcoin will reach...',
+    expires_at: '2024-12-31T23:59:59Z',
+    initial_liquidity: 500
+  })
+})`}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="border border-white/10 rounded-md overflow-hidden">
+                          <div className="bg-[#1a1a1a] px-4 py-3 border-b border-white/10 flex justify-between items-center">
+                            <h4 className="text-white font-medium">GET /predictions/{"{id}"}</h4>
+                            <span className="text-xs bg-green-500/20 text-green-500 px-2 py-1 rounded">GET</span>
+                          </div>
+                          <div className="p-4">
+                            <p className="mb-4">Retrieve a specific prediction market by ID.</p>
+                            <h5 className="text-white font-medium mt-3 mb-2">Path Parameters</h5>
+                            <table className="w-full text-sm">
+                              <thead>
+                                <tr className="border-b border-white/10">
+                                  <th className="text-left py-2 text-white/70">Name</th>
+                                  <th className="text-left py-2 text-white/70">Type</th>
+                                  <th className="text-left py-2 text-white/70">Description</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td className="py-2">id</td>
+                                  <td className="py-2">string</td>
+                                  <td className="py-2">Unique identifier of the prediction market</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </TabsContent>
+
+                      <TabsContent value="tokens" className="space-y-6">
+                        <div className="border border-white/10 rounded-md overflow-hidden">
+                          <div className="bg-[#1a1a1a] px-4 py-3 border-b border-white/10 flex justify-between items-center">
+                            <h4 className="text-white font-medium">GET /token-pitches</h4>
+                            <span className="text-xs bg-green-500/20 text-green-500 px-2 py-1 rounded">GET</span>
+                          </div>
+                          <div className="p-4">
+                            <p className="mb-4">Retrieve a list of token pitches.</p>
+                            <h5 className="text-white font-medium mt-3 mb-2">Parameters</h5>
+                            <table className="w-full text-sm">
+                              <thead>
+                                <tr className="border-b border-white/10">
+                                  <th className="text-left py-2 text-white/70">Name</th>
+                                  <th className="text-left py-2 text-white/70">Type</th>
+                                  <th className="text-left py-2 text-white/70">Description</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr className="border-b border-white/10">
+                                  <td className="py-2">limit</td>
+                                  <td className="py-2">integer</td>
+                                  <td className="py-2">Maximum number of results (default: 20)</td>
+                                </tr>
+                                <tr>
+                                  <td className="py-2">offset</td>
+                                  <td className="py-2">integer</td>
+                                  <td className="py-2">Number of results to skip (default: 0)</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+
+                        <div className="border border-white/10 rounded-md overflow-hidden">
+                          <div className="bg-[#1a1a1a] px-4 py-3 border-b border-white/10 flex justify-between items-center">
+                            <h4 className="text-white font-medium">POST /token-pitches</h4>
+                            <span className="text-xs bg-blue-500/20 text-blue-500 px-2 py-1 rounded">POST</span>
+                          </div>
+                          <div className="p-4">
+                            <p className="mb-4">Create a new token pitch.</p>
+                            <h5 className="text-white font-medium mt-3 mb-2">Request Body</h5>
+                            <table className="w-full text-sm">
+                              <thead>
+                                <tr className="border-b border-white/10">
+                                  <th className="text-left py-2 text-white/70">Name</th>
+                                  <th className="text-left py-2 text-white/70">Type</th>
+                                  <th className="text-left py-2 text-white/70">Description</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr className="border-b border-white/10">
+                                  <td className="py-2">name</td>
+                                  <td className="py-2">string</td>
+                                  <td className="py-2">Name of the token</td>
+                                </tr>
+                                <tr className="border-b border-white/10">
+                                  <td className="py-2">symbol</td>
+                                  <td className="py-2">string</td>
+                                  <td className="py-2">Token symbol (e.g., BTC, ETH)</td>
+                                </tr>
+                                <tr className="border-b border-white/10">
+                                  <td className="py-2">description</td>
+                                  <td className="py-2">string</td>
+                                  <td className="py-2">Detailed description of the token</td>
+                                </tr>
+                                <tr>
+                                  <td className="py-2">use_case</td>
+                                  <td className="py-2">string</td>
+                                  <td className="py-2">Primary use case for the token</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+
+                        <div className="border border-white/10 rounded-md overflow-hidden">
+                          <div className="bg-[#1a1a1a] px-4 py-3 border-b border-white/10 flex justify-between items-center">
+                            <h4 className="text-white font-medium">POST /token-pitches/{"{id}"}/simulate</h4>
+                            <span className="text-xs bg-blue-500/20 text-blue-500 px-2 py-1 rounded">POST</span>
+                          </div>
+                          <div className="p-4">
+                            <p className="mb-4">Run a simulation on a token pitch.</p>
+                            <h5 className="text-white font-medium mt-3 mb-2">Request Body</h5>
+                            <table className="w-full text-sm">
+                              <thead>
+                                <tr className="border-b border-white/10">
+                                  <th className="text-left py-2 text-white/70">Name</th>
+                                  <th className="text-left py-2 text-white/70">Type</th>
+                                  <th className="text-left py-2 text-white/70">Description</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr className="border-b border-white/10">
+                                  <td className="py-2">initial_supply</td>
+                                  <td className="py-2">number</td>
+                                  <td className="py-2">Initial token supply</td>
+                                </tr>
+                                <tr className="border-b border-white/10">
+                                  <td className="py-2">initial_price</td>
+                                  <td className="py-2">number</td>
+                                  <td className="py-2">Initial token price</td>
+                                </tr>
+                                <tr>
+                                  <td className="py-2">simulation_period</td>
+                                  <td className="py-2">integer</td>
+                                  <td className="py-2">Number of days to simulate</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </TabsContent>
+
+                      <TabsContent value="quests" className="space-y-6">
+                        <div className="border border-white/10 rounded-md overflow-hidden">
+                          <div className="bg-[#1a1a1a] px-4 py-3 border-b border-white/10 flex justify-between items-center">
+                            <h4 className="text-white font-medium">GET /quests</h4>
+                            <span className="text-xs bg-green-500/20 text-green-500 px-2 py-1 rounded">GET</span>
+                          </div>
+                          <div className="p-4">
+                            <p className="mb-4">Retrieve a list of available quests.</p>
+                            <h5 className="text-white font-medium mt-3 mb-2">Parameters</h5>
+                            <table className="w-full text-sm">
+                              <thead>
+                                <tr className="border-b border-white/10">
+                                  <th className="text-left py-2 text-white/70">Name</th>
+                                  <th className="text-left py-2 text-white/70">Type</th>
+                                  <th className="text-left py-2 text-white/70">Description</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr className="border-b border-white/10">
+                                  <td className="py-2">difficulty</td>
+                                  <td className="py-2">string</td>
+                                  <td className="py-2">Filter by difficulty (beginner, intermediate, advanced)</td>
+                                </tr>
+                                <tr className="border-b border-white/10">
+                                  <td className="py-2">status</td>
+                                  <td className="py-2">string</td>
+                                  <td className="py-2">Filter by status (active, completed, expired)</td>
+                                </tr>
+                                <tr>
+                                  <td className="py-2">category</td>
+                                  <td className="py-2">string</td>
+                                  <td className="py-2">Filter by category (prediction, token, governance)</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+
+                        <div className="border border-white/10 rounded-md overflow-hidden">
+                          <div className="bg-[#1a1a1a] px-4 py-3 border-b border-white/10 flex justify-between items-center">
+                            <h4 className="text-white font-medium">POST /quests/{"{id}"}/complete</h4>
+                            <span className="text-xs bg-blue-500/20 text-blue-500 px-2 py-1 rounded">POST</span>
+                          </div>
+                          <div className="p-4">
+                            <p className="mb-4">Submit a quest completion for verification.</p>
+                            <h5 className="text-white font-medium mt-3 mb-2">Path Parameters</h5>
+                            <table className="w-full text-sm">
+                              <thead>
+                                <tr className="border-b border-white/10">
+                                  <th className="text-left py-2 text-white/70">Name</th>
+                                  <th className="text-left py-2 text-white/70">Type</th>
+                                  <th className="text-left py-2 text-white/70">Description</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td className="py-2">id</td>
+                                  <td className="py-2">string</td>
+                                  <td className="py-2">Unique identifier of the quest</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                            <h5 className="text-white font-medium mt-4 mb-2">Request Body</h5>
+                            <table className="w-full text-sm">
+                              <thead>
+                                <tr className="border-b border-white/10">
+                                  <th className="text-left py-2 text-white/70">Name</th>
+                                  <th className="text-left py-2 text-white/70">Type</th>
+                                  <th className="text-left py-2 text-white/70">Description</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td className="py-2">proof</td>
+                                  <td className="py-2">object</td>
+                                  <td className="py-2">Proof of completion (varies by quest type)</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </TabsContent>
+
+                      <TabsContent value="funding" className="space-y-6">
+                        <div className="border border-white/10 rounded-md overflow-hidden">
+                          <div className="bg-[#1a1a1a] px-4 py-3 border-b border-white/10 flex justify-between items-center">
+                            <h4 className="text-white font-medium">GET /proposals</h4>
+                            <span className="text-xs bg-green-500/20 text-green-500 px-2 py-1 rounded">GET</span>
+                          </div>
+                          <div className="p-4">
+                            <p className="mb-4">Retrieve a list of funding proposals.</p>
+                            <h5 className="text-white font-medium mt-3 mb-2">Parameters</h5>
+                            <table className="w-full text-sm">
+                              <thead>
+                                <tr className="border-b border-white/10">
+                                  <th className="text-left py-2 text-white/70">Name</th>
+                                  <th className="text-left py-2 text-white/70">Type</th>
+                                  <th className="text-left py-2 text-white/70">Description</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr className="border-b border-white/10">
+                                  <td className="py-2">status</td>
+                                  <td className="py-2">string</td>
+                                  <td className="py-2">Filter by status (active, funded, rejected)</td>
+                                </tr>
+                                <tr className="border-b border-white/10">
+                                  <td className="py-2">category</td>
+                                  <td className="py-2">string</td>
+                                  <td className="py-2">Filter by category (development, marketing, research)</td>
+                                </tr>
+                                <tr>
+                                  <td className="py-2">sort_by</td>
+                                  <td className="py-2">string</td>
+                                  <td className="py-2">Sort by field (created_at, funding_amount, votes)</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+
+                        <div className="border border-white/10 rounded-md overflow-hidden">
+                          <div className="bg-[#1a1a1a] px-4 py-3 border-b border-white/10 flex justify-between items-center">
+                            <h4 className="text-white font-medium">POST /proposals</h4>
+                            <span className="text-xs bg-blue-500/20 text-blue-500 px-2 py-1 rounded">POST</span>
+                          </div>
+                          <div className="p-4">
+                            <p className="mb-4">Create a new funding proposal.</p>
+                            <h5 className="text-white font-medium mt-3 mb-2">Request Body</h5>
+                            <table className="w-full text-sm">
+                              <thead>
+                                <tr className="border-b border-white/10">
+                                  <th className="text-left py-2 text-white/70">Name</th>
+                                  <th className="text-left py-2 text-white/70">Type</th>
+                                  <th className="text-left py-2 text-white/70">Description</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr className="border-b border-white/10">
+                                  <td className="py-2">title</td>
+                                  <td className="py-2">string</td>
+                                  <td className="py-2">Title of the proposal</td>
+                                </tr>
+                                <tr className="border-b border-white/10">
+                                  <td className="py-2">description</td>
+                                  <td className="py-2">string</td>
+                                  <td className="py-2">Detailed description of the proposal</td>
+                                </tr>
+                                <tr className="border-b border-white/10">
+                                  <td className="py-2">funding_amount</td>
+                                  <td className="py-2">number</td>
+                                  <td className="py-2">Requested funding amount</td>
+                                </tr>
+                                <tr>
+                                  <td className="py-2">category</td>
+                                  <td className="py-2">string</td>
+                                  <td className="py-2">Proposal category</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+
+                        <div className="border border-white/10 rounded-md overflow-hidden">
+                          <div className="bg-[#1a1a1a] px-4 py-3 border-b border-white/10 flex justify-between items-center">
+                            <h4 className="text-white font-medium">POST /proposals/{"{id}"}/vote</h4>
+                            <span className="text-xs bg-blue-500/20 text-blue-500 px-2 py-1 rounded">POST</span>
+                          </div>
+                          <div className="p-4">
+                            <p className="mb-4">Vote on a funding proposal using quadratic voting.</p>
+                            <h5 className="text-white font-medium mt-3 mb-2">Request Body</h5>
+                            <table className="w-full text-sm">
+                              <thead>
+                                <tr className="border-b border-white/10">
+                                  <th className="text-left py-2 text-white/70">Name</th>
+                                  <th className="text-left py-2 text-white/70">Type</th>
+                                  <th className="text-left py-2 text-white/70">Description</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr className="border-b border-white/10">
+                                  <td className="py-2">vote_amount</td>
+                                  <td className="py-2">number</td>
+                                  <td className="py-2">Amount of voting power to allocate</td>
+                                </tr>
+                                <tr>
+                                  <td className="py-2">direction</td>
+                                  <td className="py-2">string</td>
+                                  <td className="py-2">Vote direction (for, against)</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </TabsContent>
+                    </Tabs>
                   </div>
                 </section>
 
-                <section id="token-pitching" className="mb-12">
-                  <h2 className="text-2xl font-semibold text-white mb-4">Token Pitching</h2>
-                  <div className="text-white/80 space-y-6">
-                    <div>
-                      <h3 className="text-lg font-medium text-white mb-3">List Token Pitches</h3>
-                      <p className="mb-3">Get all token pitches with optional filtering.</p>
-                      <CodeBlock
-                        id="list-pitches"
-                        language="bash"
-                        code={`GET /token-pitches?category=defi&status=active
-
-curl -H "Authorization: Bearer YOUR_API_KEY" \\
-  "https://api.peculia.com/v1/token-pitches?category=defi&status=active"`}
-                      />
+                <section id="rate-limits" className="mb-12">
+                  <h2 className="text-2xl font-semibold text-white mb-4">Rate Limits</h2>
+                  <div className="text-white/80 space-y-4">
+                    <p>
+                      The API is rate-limited to ensure fair usage and maintain service stability. The current limits
+                      are:
+                    </p>
+                    <ul className="list-disc pl-6 mt-2 space-y-2">
+                      <li>100 requests per minute for free tier users</li>
+                      <li>1,000 requests per minute for premium tier users</li>
+                      <li>Custom limits available for enterprise users</li>
+                    </ul>
+                    <p className="mt-3">Rate limit information is included in the response headers:</p>
+                    <div className="bg-[#1a1a1a] p-3 rounded-md mt-2 font-mono text-sm">
+                      {`X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 95
+X-RateLimit-Reset: 1620000000`}
                     </div>
-                    <div>
-                      <h3 className="text-lg font-medium text-white mb-3">Create Token Pitch</h3>
-                      <p className="mb-3">Submit a new token pitch for community evaluation.</p>
-                      <CodeBlock
-                        id="create-pitch"
-                        language="bash"
-                        code={`POST /token-pitches
-
-curl -X POST \\
-  -H "Authorization: Bearer YOUR_API_KEY" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "name": "EcoToken",
-    "symbol": "ECO",
-    "description": "Carbon credit tokenization platform",
-    "totalSupply": "1000000000",
-    "category": "sustainability",
-    "tokenomics": {
-      "distribution": {
-        "public": 40,
-        "team": 20,
-        "ecosystem": 30,
-        "treasury": 10
-      }
-    }
-  }' \\
-  https://api.peculia.com/v1/token-pitches`}
-                      />
-                    </div>
+                    <p className="mt-3">
+                      If you exceed the rate limit, you'll receive a 429 Too Many Requests response with information
+                      about when you can resume making requests.
+                    </p>
                   </div>
                 </section>
 
-                <section id="quest-system" className="mb-12">
-                  <h2 className="text-2xl font-semibold text-white mb-4">Quest System</h2>
-                  <div className="text-white/80 space-y-6">
-                    <div>
-                      <h3 className="text-lg font-medium text-white mb-3">List Available Quests</h3>
-                      <p className="mb-3">Get all available quests for the authenticated user.</p>
-                      <CodeBlock
-                        id="list-quests"
-                        language="bash"
-                        code={`GET /quests
-
-curl -H "Authorization: Bearer YOUR_API_KEY" \\
-  https://api.peculia.com/v1/quests`}
-                      />
+                <section id="error-handling" className="mb-12">
+                  <h2 className="text-2xl font-semibold text-white mb-4">Error Handling</h2>
+                  <div className="text-white/80 space-y-4">
+                    <p>
+                      The API uses standard HTTP status codes to indicate success or failure of requests. Error
+                      responses include a JSON body with details about the error.
+                    </p>
+                    <div className="bg-[#1a1a1a] p-4 rounded-lg mt-4">
+                      <h3 className="text-white font-medium mb-2">Common Error Codes</h3>
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b border-white/10">
+                            <th className="text-left py-2 text-white/70">Status Code</th>
+                            <th className="text-left py-2 text-white/70">Description</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr className="border-b border-white/10">
+                            <td className="py-2">400 Bad Request</td>
+                            <td className="py-2">The request was invalid or malformed</td>
+                          </tr>
+                          <tr className="border-b border-white/10">
+                            <td className="py-2">401 Unauthorized</td>
+                            <td className="py-2">Authentication failed or was not provided</td>
+                          </tr>
+                          <tr className="border-b border-white/10">
+                            <td className="py-2">403 Forbidden</td>
+                            <td className="py-2">You don't have permission to access the resource</td>
+                          </tr>
+                          <tr className="border-b border-white/10">
+                            <td className="py-2">404 Not Found</td>
+                            <td className="py-2">The requested resource doesn't exist</td>
+                          </tr>
+                          <tr className="border-b border-white/10">
+                            <td className="py-2">429 Too Many Requests</td>
+                            <td className="py-2">You've exceeded the rate limit</td>
+                          </tr>
+                          <tr>
+                            <td className="py-2">500 Internal Server Error</td>
+                            <td className="py-2">Something went wrong on our end</td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
-                    <div>
-                      <h3 className="text-lg font-medium text-white mb-3">Complete Quest</h3>
-                      <p className="mb-3">Mark a quest as completed and claim rewards.</p>
-                      <CodeBlock
-                        id="complete-quest"
-                        language="bash"
-                        code={`POST /quests/{id}/complete
-
-curl -X POST \\
-  -H "Authorization: Bearer YOUR_API_KEY" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "proof": "transaction_hash_or_verification_data"
-  }' \\
-  https://api.peculia.com/v1/quests/456/complete`}
-                      />
-                    </div>
-                  </div>
-                </section>
-
-                <section id="quadratic-funding" className="mb-12">
-                  <h2 className="text-2xl font-semibold text-white mb-4">Quadratic Funding</h2>
-                  <div className="text-white/80 space-y-6">
-                    <div>
-                      <h3 className="text-lg font-medium text-white mb-3">List Funding Rounds</h3>
-                      <p className="mb-3">Get all active quadratic funding rounds.</p>
-                      <CodeBlock
-                        id="list-funding"
-                        language="bash"
-                        code={`GET /quadratic-funding
-
-curl -H "Authorization: Bearer YOUR_API_KEY" \\
-  https://api.peculia.com/v1/quadratic-funding`}
-                      />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-medium text-white mb-3">Submit Proposal</h3>
-                      <p className="mb-3">Submit a proposal for quadratic funding.</p>
-                      <CodeBlock
-                        id="submit-proposal"
-                        language="bash"
-                        code={`POST /quadratic-funding/{roundId}/proposals
-
-curl -X POST \\
-  -H "Authorization: Bearer YOUR_API_KEY" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "title": "Open Source DeFi Analytics Tool",
-    "description": "Building analytics tools for DeFi protocols",
-    "fundingGoal": "50000",
-    "category": "tooling"
-  }' \\
-  https://api.peculia.com/v1/quadratic-funding/round-1/proposals`}
-                      />
+                    <div className="bg-[#1a1a1a] p-4 rounded-lg mt-4">
+                      <h3 className="text-white font-medium mb-2">Error Response Format</h3>
+                      <div className="bg-black p-3 rounded-md font-mono text-sm">
+                        {`{
+  "error": {
+    "code": "invalid_request",
+    "message": "The request was invalid",
+    "details": "The 'title' field is required"
+  }
+}`}
+                      </div>
                     </div>
                   </div>
                 </section>
@@ -339,65 +790,131 @@ curl -X POST \\
                   <h2 className="text-2xl font-semibold text-white mb-4">Webhooks</h2>
                   <div className="text-white/80 space-y-4">
                     <p>
-                      Webhooks allow you to receive real-time notifications when events occur on the Peculia platform.
+                      Webhooks allow you to receive real-time notifications about events in the Peculia platform. You
+                      can configure webhooks in your account settings.
                     </p>
-                    <div className="bg-[#1a1a1a] p-4 rounded-lg">
-                      <h3 className="text-white font-medium mb-2">Supported Events</h3>
-                      <ul className="list-disc pl-6 space-y-1 text-sm">
-                        <li>prediction_market.created</li>
-                        <li>prediction_market.resolved</li>
-                        <li>token_pitch.submitted</li>
-                        <li>quest.completed</li>
-                        <li>funding_round.started</li>
-                      </ul>
+                    <div className="bg-[#1a1a1a] p-4 rounded-lg mt-4">
+                      <h3 className="text-white font-medium mb-2">Available Events</h3>
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b border-white/10">
+                            <th className="text-left py-2 text-white/70">Event</th>
+                            <th className="text-left py-2 text-white/70">Description</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr className="border-b border-white/10">
+                            <td className="py-2">prediction.created</td>
+                            <td className="py-2">A new prediction market has been created</td>
+                          </tr>
+                          <tr className="border-b border-white/10">
+                            <td className="py-2">prediction.resolved</td>
+                            <td className="py-2">A prediction market has been resolved</td>
+                          </tr>
+                          <tr className="border-b border-white/10">
+                            <td className="py-2">token.pitched</td>
+                            <td className="py-2">A new token pitch has been created</td>
+                          </tr>
+                          <tr className="border-b border-white/10">
+                            <td className="py-2">quest.completed</td>
+                            <td className="py-2">A user has completed a quest</td>
+                          </tr>
+                          <tr>
+                            <td className="py-2">proposal.funded</td>
+                            <td className="py-2">A funding proposal has been approved</td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
-                    <CodeBlock
-                      id="webhook-example"
-                      language="json"
-                      code={`{
-  "event": "prediction_market.resolved",
+                    <div className="bg-[#1a1a1a] p-4 rounded-lg mt-4">
+                      <h3 className="text-white font-medium mb-2">Webhook Payload Example</h3>
+                      <div className="bg-black p-3 rounded-md font-mono text-sm">
+                        {`{
+  "event": "prediction.created",
+  "timestamp": "2023-06-15T14:32:10Z",
   "data": {
-    "id": "123",
-    "title": "Will Bitcoin reach $100k by end of 2024?",
-    "outcome": "no",
-    "resolvedAt": "2024-12-31T23:59:59Z"
-  },
-  "timestamp": "2024-12-31T23:59:59Z"
+    "prediction_id": "pred_123456",
+    "title": "Will ETH reach $5000 by end of 2023?",
+    "created_by": "user_789012",
+    "expires_at": "2023-12-31T23:59:59Z"
+  }
 }`}
-                    />
+                      </div>
+                    </div>
                   </div>
                 </section>
 
-                <section id="rate-limits" className="mb-12">
-                  <h2 className="text-2xl font-semibold text-white mb-4">Rate Limits</h2>
+                <section id="sdks" className="mb-6">
+                  <h2 className="text-2xl font-semibold text-white mb-4">SDKs & Libraries</h2>
                   <div className="text-white/80 space-y-4">
-                    <p>To ensure fair usage and platform stability, the Peculia API implements rate limiting.</p>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <p>
+                      We provide official SDKs for several programming languages to make it easier to integrate with the
+                      Peculia API:
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                       <div className="bg-[#1a1a1a] p-4 rounded-lg">
-                        <h3 className="text-white font-medium mb-2">Standard Tier</h3>
-                        <ul className="text-sm space-y-1">
-                          <li>1,000 requests per hour</li>
-                          <li>10 requests per second</li>
-                        </ul>
+                        <h3 className="text-white font-medium mb-2 flex items-center">
+                          <Code size={16} className="mr-2" />
+                          JavaScript/TypeScript
+                        </h3>
+                        <p className="text-sm mb-3">
+                          Our JavaScript SDK works in both Node.js and browser environments.
+                        </p>
+                        <div className="bg-black p-2 rounded-md font-mono text-xs">npm install peculia-js</div>
                       </div>
                       <div className="bg-[#1a1a1a] p-4 rounded-lg">
-                        <h3 className="text-white font-medium mb-2">Premium Tier</h3>
-                        <ul className="text-sm space-y-1">
-                          <li>10,000 requests per hour</li>
-                          <li>100 requests per second</li>
-                        </ul>
+                        <h3 className="text-white font-medium mb-2 flex items-center">
+                          <Code size={16} className="mr-2" />
+                          Python
+                        </h3>
+                        <p className="text-sm mb-3">Python SDK for server-side applications and data analysis.</p>
+                        <div className="bg-black p-2 rounded-md font-mono text-xs">pip install peculia-python</div>
+                      </div>
+                      <div className="bg-[#1a1a1a] p-4 rounded-lg">
+                        <h3 className="text-white font-medium mb-2 flex items-center">
+                          <Code size={16} className="mr-2" />
+                          Go
+                        </h3>
+                        <p className="text-sm mb-3">Go SDK for high-performance applications.</p>
+                        <div className="bg-black p-2 rounded-md font-mono text-xs">
+                          go get github.com/peculia/peculia-go
+                        </div>
+                      </div>
+                      <div className="bg-[#1a1a1a] p-4 rounded-lg">
+                        <h3 className="text-white font-medium mb-2 flex items-center">
+                          <Code size={16} className="mr-2" />
+                          Rust
+                        </h3>
+                        <p className="text-sm mb-3">Rust SDK for systems programming and blockchain applications.</p>
+                        <div className="bg-black p-2 rounded-md font-mono text-xs">cargo add peculia-rs</div>
                       </div>
                     </div>
-                    <div className="bg-[#1a1a1a] p-4 rounded-lg">
-                      <h3 className="text-white font-medium mb-2">Rate Limit Headers</h3>
-                      <pre className="text-sm text-white/70">
-                        {`X-RateLimit-Limit: 1000
-X-RateLimit-Remaining: 999
-X-RateLimit-Reset: 1640995200`}
-                      </pre>
-                    </div>
+                    <p className="mt-4">
+                      All SDKs are open source and available on our{" "}
+                      <a href="#" className="text-[#10b981] hover:underline">
+                        GitHub repository
+                      </a>
+                      . We welcome contributions from the community!
+                    </p>
                   </div>
                 </section>
+
+                <div className="mt-12 pt-6 border-t border-white/10 flex justify-between items-center">
+                  <Button
+                    onClick={() => router.push("/docs/getting-started")}
+                    variant="outline"
+                    className="text-white/70 border-white/10 hover:bg-white/5"
+                  >
+                    Previous: Getting Started
+                  </Button>
+                  <Button
+                    onClick={() => router.push("/docs/cli")}
+                    className="bg-[#10b981] text-black hover:bg-[#0d9668]"
+                  >
+                    Next: CLI Guide
+                    <ChevronRight size={14} className="ml-1" />
+                  </Button>
+                </div>
               </motion.div>
             </div>
           </div>

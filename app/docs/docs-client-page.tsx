@@ -1,12 +1,13 @@
 "use client"
 
 import type React from "react"
-import Link from "next/link"
+
 import { useState, useEffect } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import { motion } from "framer-motion"
-import { Book, Code, Terminal, ArrowRight, Search, FileText, Zap, Users } from "lucide-react"
+import { Search, Book, Code, Terminal, ChevronRight } from "lucide-react"
 import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 
 export default function DocsClientPage() {
@@ -14,42 +15,6 @@ export default function DocsClientPage() {
   const [activeTab, setActiveTab] = useState("getting-started")
   const router = useRouter()
   const pathname = usePathname()
-
-  const documentationSections = [
-    {
-      title: "Getting Started",
-      description: "Learn the basics of Peculia and get up and running quickly",
-      icon: Book,
-      href: "/docs/getting-started",
-      color: "text-[#10b981]",
-      bgColor: "bg-[#10b981]/10",
-    },
-    {
-      title: "API Reference",
-      description: "Complete API documentation with examples and endpoints",
-      icon: Code,
-      href: "/docs/api",
-      color: "text-blue-400",
-      bgColor: "bg-blue-400/10",
-    },
-    {
-      title: "CLI Guide",
-      description: "Command-line interface documentation and usage examples",
-      icon: Terminal,
-      href: "/docs/cli",
-      color: "text-purple-400",
-      bgColor: "bg-purple-400/10",
-    },
-  ]
-
-  const quickLinks = [
-    { title: "Platform Overview", href: "/docs/getting-started#introduction" },
-    { title: "Wallet Connection", href: "/docs/getting-started#wallet-connection" },
-    { title: "Prediction Markets API", href: "/docs/api#prediction-markets" },
-    { title: "Token Pitching API", href: "/docs/api#token-pitching" },
-    { title: "CLI Installation", href: "/docs/cli#installation" },
-    { title: "CLI Commands", href: "/docs/cli#commands" },
-  ]
 
   useEffect(() => {
     // Set active tab based on pathname
@@ -79,107 +44,103 @@ export default function DocsClientPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-12"
+          className="mb-8"
         >
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Documentation</h1>
-          <p className="text-xl text-white/70 mb-8 max-w-2xl mx-auto">
-            Everything you need to know about building with Peculia. From getting started to advanced API usage.
+          <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">Documentation</h1>
+          <p className="text-white/80 max-w-3xl">
+            Comprehensive guides, API references, and resources to help you build with Peculia.
           </p>
 
-          <div className="max-w-md mx-auto relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/40" size={20} />
-            <Input
-              type="text"
-              placeholder="Search documentation..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-[#1a1a1a] border-white/20 text-white placeholder:text-white/40"
-            />
-          </div>
+          <form onSubmit={handleSearch} className="mt-6 max-w-xl">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/50" size={18} />
+              <Input
+                type="text"
+                placeholder="Search documentation..."
+                className="pl-10 bg-[#0a0a0a] border-white/10 text-white"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <Button
+                type="submit"
+                className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 bg-[#10b981] text-black hover:bg-[#0d9668]"
+                size="sm"
+              >
+                Search
+              </Button>
+            </div>
+          </form>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-          {documentationSections.map((section, index) => (
-            <motion.div
-              key={section.title}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-            >
-              <Link href={section.href}>
-                <div className="bg-[#0a0a0a] border border-white/10 rounded-lg p-6 hover:border-white/20 transition-all duration-300 group h-full">
-                  <div
-                    className={`${section.bgColor} ${section.color} w-12 h-12 rounded-lg flex items-center justify-center mb-4`}
-                  >
-                    <section.icon size={24} />
-                  </div>
-                  <h3 className="text-xl font-semibold text-white mb-2 group-hover:text-[#10b981] transition-colors">
-                    {section.title}
-                  </h3>
-                  <p className="text-white/70 mb-4">{section.description}</p>
-                  <div className="flex items-center text-[#10b981] group-hover:translate-x-1 transition-transform">
-                    <span className="text-sm">Learn more</span>
-                    <ArrowRight size={16} className="ml-1" />
-                  </div>
-                </div>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="bg-[#0a0a0a] border border-white/10 rounded-lg p-6"
-          >
-            <h2 className="text-2xl font-semibold text-white mb-4">Quick Links</h2>
-            <div className="space-y-3">
-              {quickLinks.map((link, index) => (
-                <Link
-                  key={index}
-                  href={link.href}
-                  className="flex items-center text-white/70 hover:text-white transition-colors group"
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Sidebar Navigation */}
+          <div className="lg:col-span-1">
+            <div className="bg-[#0a0a0a] rounded-lg border border-white/10 p-4 sticky top-24">
+              <h3 className="text-white font-medium mb-4">Documentation</h3>
+              <nav className="space-y-1">
+                <button
+                  onClick={() => navigateToSection("getting-started")}
+                  className={`w-full flex items-center px-3 py-2 text-sm rounded-md transition-colors ${
+                    activeTab === "getting-started"
+                      ? "bg-[#10b981]/10 text-[#10b981]"
+                      : "text-white/70 hover:text-white hover:bg-white/5"
+                  }`}
                 >
-                  <FileText size={16} className="mr-3 text-[#10b981]" />
-                  <span className="group-hover:translate-x-1 transition-transform">{link.title}</span>
-                </Link>
-              ))}
-            </div>
-          </motion.div>
+                  <Book size={16} className="mr-2" />
+                  <span>Getting Started</span>
+                </button>
+                <button
+                  onClick={() => navigateToSection("api")}
+                  className={`w-full flex items-center px-3 py-2 text-sm rounded-md transition-colors ${
+                    activeTab === "api"
+                      ? "bg-[#10b981]/10 text-[#10b981]"
+                      : "text-white/70 hover:text-white hover:bg-white/5"
+                  }`}
+                >
+                  <Code size={16} className="mr-2" />
+                  <span>API Reference</span>
+                </button>
+                <button
+                  onClick={() => navigateToSection("cli")}
+                  className={`w-full flex items-center px-3 py-2 text-sm rounded-md transition-colors ${
+                    activeTab === "cli"
+                      ? "bg-[#10b981]/10 text-[#10b981]"
+                      : "text-white/70 hover:text-white hover:bg-white/5"
+                  }`}
+                >
+                  <Terminal size={16} className="mr-2" />
+                  <span>CLI Guide</span>
+                </button>
+              </nav>
 
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="bg-[#0a0a0a] border border-white/10 rounded-lg p-6"
-          >
-            <h2 className="text-2xl font-semibold text-white mb-4">Platform Features</h2>
-            <div className="space-y-4">
-              <div className="flex items-start">
-                <Zap className="text-[#10b981] mr-3 mt-1" size={16} />
-                <div>
-                  <h3 className="text-white font-medium">Prediction Markets</h3>
-                  <p className="text-sm text-white/70">AI-verified predictions with real-time market data</p>
-                </div>
-              </div>
-              <div className="flex items-start">
-                <Users className="text-[#10b981] mr-3 mt-1" size={16} />
-                <div>
-                  <h3 className="text-white font-medium">Token Pitching</h3>
-                  <p className="text-sm text-white/70">Simulate and evaluate token ideas with community feedback</p>
-                </div>
-              </div>
-              <div className="flex items-start">
-                <FileText className="text-[#10b981] mr-3 mt-1" size={16} />
-                <div>
-                  <h3 className="text-white font-medium">Quadratic Funding</h3>
-                  <p className="text-sm text-white/70">Fair governance with proportional voting power</p>
+              <div className="mt-6 pt-6 border-t border-white/10">
+                <h4 className="text-white font-medium mb-3">Resources</h4>
+                <div className="space-y-2">
+                  <a
+                    href="#"
+                    className="flex items-center px-3 py-2 text-sm rounded-md text-white/70 hover:text-white hover:bg-white/5 transition-colors"
+                  >
+                    <ChevronRight size={14} className="mr-2" />
+                    <span>GitHub Repository</span>
+                  </a>
+                  <a
+                    href="#"
+                    className="flex items-center px-3 py-2 text-sm rounded-md text-white/70 hover:text-white hover:bg-white/5 transition-colors"
+                  >
+                    <ChevronRight size={14} className="mr-2" />
+                    <span>Community Forum</span>
+                  </a>
+                  <a
+                    href="#"
+                    className="flex items-center px-3 py-2 text-sm rounded-md text-white/70 hover:text-white hover:bg-white/5 transition-colors"
+                  >
+                    <ChevronRight size={14} className="mr-2" />
+                    <span>Discord Server</span>
+                  </a>
                 </div>
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Main Content */}
           <div className="lg:col-span-3">
@@ -195,14 +156,14 @@ export default function DocsClientPage() {
                   </TabsTrigger>
                   <TabsTrigger
                     value="api"
-                    className="flex-1 data-[state=active]:bg-blue-400/10 data-[state=active]:text-blue-400"
+                    className="flex-1 data-[state=active]:bg-[#10b981]/10 data-[state=active]:text-[#10b981]"
                     onClick={() => navigateToSection("api")}
                   >
                     API Reference
                   </TabsTrigger>
                   <TabsTrigger
                     value="cli"
-                    className="flex-1 data-[state=active]:bg-purple-400/10 data-[state=active]:text-purple-400"
+                    className="flex-1 data-[state=active]:bg-[#10b981]/10 data-[state=active]:text-[#10b981]"
                     onClick={() => navigateToSection("cli")}
                   >
                     CLI Guide
