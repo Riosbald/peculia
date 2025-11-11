@@ -1,321 +1,344 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
-import { Clock, Users, TrendingUp, Eye } from "lucide-react"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { useState, useEffect, useRef } from "react"
+import { motion, useAnimation, useInView } from "framer-motion"
+import { ArrowRight, Dices, TrendingUp, Trophy, Vote, User, Clock, Activity, ExternalLink } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { useWebSocket } from "@/hooks/use-websocket"
-import { useNotifications } from "@/hooks/use-notifications"
-import ActivityDetailModal, { type Activity } from "@/components/activities/activity-detail-modal"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
+import Link from "next/link"
+import { cn } from "@/lib/utils"
+import { useMobile } from "@/hooks/use-mobile"
+import { SectionHeader } from "@/components/ui/section-header"
 
-/**
- * Generates mock activity data for demonstration purposes
- */
-const generateMockActivity = (): Activity => {
-  const types: Activity["type"][] = ["prediction", "token-pitch", "quest", "funding"]
-  const statuses: Activity["status"][] = ["active", "completed", "pending"]
-  const categories = ["Technology", "Finance", "Gaming", "Art", "Music", "Sports"]
-
-  const type = types[Math.floor(Math.random() * types.length)]
-  const status = statuses[Math.floor(Math.random() * statuses.length)]
-  const category = categories[Math.floor(Math.random() * categories.length)]
-
-  const titles = {
-    prediction: ["Will Bitcoin reach $100k?", "Next US President prediction", "Tesla stock forecast"],
-    "token-pitch": ["Revolutionary DeFi Protocol", "AI-powered Trading Bot", "Green Energy Token"],
-    quest: ["Complete 10 trades", "Refer 5 friends", "Stake for 30 days"],
-    funding: ["Open Source Development", "Community Education", "Research Grant"],
+interface ActivityType {
+  id: string
+  type: "prediction" | "token" | "quest" | "governance"
+  title: string
+  description: string
+  user: {
+    name: string
+    avatar?: string
   }
-
-  const title = titles[type][Math.floor(Math.random() * titles[type].length)]
-
-  return {
-    id: Math.random().toString(36).substr(2, 9),
-    type,
-    title,
-    description: `This is a ${type} activity in the ${category} category. Join now to participate and earn rewards!`,
-    author: `User${Math.floor(Math.random() * 1000)}`,
-    timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
-    status,
-    category,
-    participants: Math.floor(Math.random() * 500) + 10,
-    reward: `${Math.floor(Math.random() * 1000) + 100} SATORI`,
-    tags: ["trending", "popular", category.toLowerCase()],
-    details: {
-      totalValue: `$${(Math.random() * 10000 + 1000).toFixed(0)}`,
-      currentBets: Math.floor(Math.random() * 100) + 5,
-      accuracy: Math.floor(Math.random() * 40) + 60,
-      progress: Math.floor(Math.random() * 100),
-      requirements: ["Minimum stake of 100 SATORI", "Complete KYC verification", "Hold tokens for minimum 7 days"],
-      submissions: Math.floor(Math.random() * 50) + 1,
-    },
-  }
+  timestamp: string
+  amount?: number
+  status?: "success" | "pending" | "failed"
 }
 
-/**
- * Individual activity card component with responsive design
- */
-const ActivityCard = ({
-  activity,
-  onClick,
-}: {
-  activity: Activity
-  onClick: () => void
-}) => {
-  const getStatusColor = (status: Activity["status"]) => {
-    switch (status) {
-      case "active":
-        return "bg-green-500/10 text-green-500 border-green-500/20"
-      case "completed":
-        return "bg-blue-500/10 text-blue-500 border-blue-500/20"
-      case "pending":
-        return "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
-      default:
-        return "bg-gray-500/10 text-gray-500 border-gray-500/20"
-    }
-  }
+export default function RecentActivitiesSection() {
+  const [activities, setActivities] = useState<ActivityType[]>([])
+  const [showAll, setShowAll] = useState(false)
+  const sectionRef = useRef(null)
+  const isInView = useInView(sectionRef, { once: true, amount: 0.2 })
+  const controls = useAnimation()
+  const isMobile = useMobile()
 
-  const getTypeIcon = (type: Activity["type"]) => {
+  // Show 5 activities initially, all when expanded
+  const displayedActivities = showAll ? activities : activities.slice(0, 5)
+
+  useEffect(() => {
+    if (isInView) {
+      controls.start("visible")
+    }
+  }, [isInView, controls])
+
+  useEffect(() => {
+    // Mock data - in a real app, this would be fetched from an API
+    const mockActivities: ActivityType[] = [
+      {
+        id: "1",
+        type: "prediction",
+        title: "Created a new prediction market",
+        description: "Will ETH reach $5,000 before July 2025?",
+        user: {
+          name: "CryptoQueen",
+          avatar: "/placeholder.svg?height=40&width=40",
+        },
+        timestamp: "2 minutes ago",
+        amount: 500,
+        status: "pending",
+      },
+      {
+        id: "2",
+        type: "token",
+        title: "Submitted a token pitch",
+        description: "DeFiDAO: Decentralized governance for DeFi protocols",
+        user: {
+          name: "BlockchainDev",
+          avatar: "/placeholder.svg?height=40&width=40",
+        },
+        timestamp: "15 minutes ago",
+        status: "success",
+      },
+      {
+        id: "3",
+        type: "quest",
+        title: "Completed a quest",
+        description: "Early Bird: Connected wallet and claimed first PPT tokens",
+        user: {
+          name: "NewUser42",
+          avatar: "/placeholder.svg?height=40&width=40",
+        },
+        timestamp: "45 minutes ago",
+        amount: 100,
+        status: "success",
+      },
+      {
+        id: "4",
+        type: "governance",
+        title: "Cast a quadratic vote",
+        description: "Proposal #23: Add support for Avalanche blockchain",
+        user: {
+          name: "GovernanceGuru",
+          avatar: "/placeholder.svg?height=40&width=40",
+        },
+        timestamp: "1 hour ago",
+        status: "success",
+      },
+      {
+        id: "5",
+        type: "prediction",
+        title: "Won a prediction market",
+        description: "Will BTC stay above $60k for the entire month?",
+        user: {
+          name: "SatoshiFan",
+          avatar: "/placeholder.svg?height=40&width=40",
+        },
+        timestamp: "3 hours ago",
+        amount: 1250,
+        status: "success",
+      },
+      {
+        id: "6",
+        type: "token",
+        title: "Received token evaluation",
+        description: "MetaDAO: Your token design scored 92/100",
+        user: {
+          name: "TokenDesigner",
+          avatar: "/placeholder.svg?height=40&width=40",
+        },
+        timestamp: "4 hours ago",
+        status: "success",
+      },
+      {
+        id: "7",
+        type: "quest",
+        title: "Created a new quest",
+        description: "Community Builder: Invite 5 friends to join Peculia",
+        user: {
+          name: "QuestMaster",
+          avatar: "/placeholder.svg?height=40&width=40",
+        },
+        timestamp: "5 hours ago",
+        amount: 250,
+        status: "pending",
+      },
+    ]
+
+    setActivities(mockActivities)
+  }, [])
+
+  const getActivityIcon = (type: ActivityType["type"]) => {
     switch (type) {
       case "prediction":
-        return "🔮"
-      case "token-pitch":
-        return "🚀"
+        return <Dices className="h-4 w-4" />
+      case "token":
+        return <TrendingUp className="h-4 w-4" />
       case "quest":
-        return "⚔️"
-      case "funding":
-        return "💰"
+        return <Trophy className="h-4 w-4" />
+      case "governance":
+        return <Vote className="h-4 w-4" />
       default:
-        return "📋"
+        return <User className="h-4 w-4" />
     }
   }
 
-  return (
-    <Card
-      className="cursor-pointer transition-all duration-200 border-border/50 bg-card/50 backdrop-blur-sm"
-      onClick={onClick}
-    >
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex items-center gap-2 min-w-0 flex-1">
-            <span className="text-lg flex-shrink-0">{getTypeIcon(activity.type)}</span>
-            <div className="min-w-0 flex-1">
-              <h3 className="font-semibold text-sm leading-tight line-clamp-2">{activity.title}</h3>
-            </div>
-          </div>
-          <Badge variant="outline" className={`${getStatusColor(activity.status)} text-xs flex-shrink-0`}>
-            {activity.status}
-          </Badge>
-        </div>
-      </CardHeader>
+  const getStatusColor = (status?: ActivityType["status"]) => {
+    switch (status) {
+      case "success":
+        return "bg-green-500/20 text-green-400 border-green-500/30"
+      case "pending":
+        return "bg-yellow-500/20 text-yellow-400 border-yellow-500/30"
+      case "failed":
+        return "bg-red-500/20 text-red-400 border-red-500/30"
+      default:
+        return "bg-white/10 text-white/70 border-white/20"
+    }
+  }
 
-      <CardContent className="space-y-3">
-        <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">{activity.description}</p>
+  const getTypeColor = (type: ActivityType["type"]) => {
+    switch (type) {
+      case "prediction":
+        return "bg-green-500/20 text-green-400 border-green-500/30"
+      case "token":
+        return "bg-blue-500/20 text-blue-400 border-blue-500/30"
+      case "quest":
+        return "bg-purple-500/20 text-purple-400 border-purple-500/30"
+      case "governance":
+        return "bg-amber-500/20 text-amber-400 border-amber-500/30"
+      default:
+        return "bg-white/10 text-white/70 border-white/20"
+    }
+  }
 
-        <div className="flex items-center justify-between text-xs text-muted-foreground">
-          <div className="flex items-center gap-1">
-            <Clock className="h-3 w-3" />
-            <span>{activity.timestamp.toLocaleDateString()}</span>
-          </div>
-          {activity.participants && (
-            <div className="flex items-center gap-1">
-              <Users className="h-3 w-3" />
-              <span>{activity.participants}</span>
-            </div>
-          )}
-        </div>
+  const getActivityRoute = (activity: ActivityType) => {
+    switch (activity.type) {
+      case "prediction":
+        return `/prediction-markets/view/${activity.id}`
+      case "token":
+        return `/token-pitching/view/${activity.id}`
+      case "quest":
+        return `/quest-system/view/${activity.id}`
+      case "governance":
+        return `/quadratic-funding/view/${activity.id}`
+      default:
+        return `/activities/${activity.id}`
+    }
+  }
 
-        <div className="flex items-center justify-between">
-          <Badge variant="secondary" className="text-xs">
-            {activity.category}
-          </Badge>
-          {activity.reward && <span className="text-xs font-medium text-primary">{activity.reward}</span>}
-        </div>
-      </CardContent>
-    </Card>
-  )
-}
-
-/**
- * Main Recent Activities component with real-time updates and infinite scroll
- */
-export default function RecentActivities() {
-  const [activities, setActivities] = useState<Activity[]>([])
-  const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null)
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
-  const [hasMore, setHasMore] = useState(true)
-  const { addNotification } = useNotifications()
-
-  /**
-   * Handles new activity messages from WebSocket
-   */
-  const handleNewActivity = useCallback(
-    (data: any) => {
-      if (data.type === "new_activity") {
-        const newActivity = generateMockActivity()
-        setActivities((prev) => [newActivity, ...prev.slice(0, 19)]) // Keep only 20 most recent
-
-        addNotification({
-          type: "info",
-          title: "New Activity",
-          message: `New ${data.activityType || "activity"} has been created!`,
-        })
-      }
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2,
+      },
     },
-    [addNotification],
-  )
+  }
 
-  /**
-   * WebSocket connection for real-time updates
-   */
-  const { sendMessage } = useWebSocket({
-    url: "wss://api.satori.com/ws",
-    onMessage: handleNewActivity,
-    onConnect: () => {
-      console.log("Connected to activity feed")
-    },
-    onError: (error) => {
-      console.warn("WebSocket connection failed, using mock data")
-    },
-  })
-
-  /**
-   * Loads initial activities data
-   */
-  const loadInitialActivities = useCallback(() => {
-    setIsLoading(true)
-
-    // Simulate API call with mock data
-    setTimeout(() => {
-      const mockActivities = Array.from({ length: 12 }, generateMockActivity).sort(
-        (a, b) => b.timestamp.getTime() - a.timestamp.getTime(),
-      )
-
-      setActivities(mockActivities)
-      setIsLoading(false)
-    }, 1000)
-  }, [])
-
-  /**
-   * Loads more activities for infinite scroll
-   */
-  const loadMoreActivities = useCallback(() => {
-    if (!hasMore) return
-
-    setTimeout(() => {
-      const moreActivities = Array.from({ length: 6 }, generateMockActivity)
-      setActivities((prev) => [...prev, ...moreActivities])
-
-      // Simulate reaching end of data
-      if (activities.length > 30) {
-        setHasMore(false)
-      }
-    }, 500)
-  }, [hasMore, activities.length])
-
-  /**
-   * Handles activity card click
-   */
-  const handleActivityClick = useCallback((activity: Activity) => {
-    setSelectedActivity(activity)
-    setIsModalOpen(true)
-  }, [])
-
-  /**
-   * Closes activity detail modal
-   */
-  const handleCloseModal = useCallback(() => {
-    setIsModalOpen(false)
-    setSelectedActivity(null)
-  }, [])
-
-  // Load initial data on mount
-  useEffect(() => {
-    loadInitialActivities()
-  }, [loadInitialActivities])
-
-  // Simulate periodic new activities
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (Math.random() > 0.7) {
-        // 30% chance every 10 seconds
-        handleNewActivity({ type: "new_activity", activityType: "prediction" })
-      }
-    }, 10000)
-
-    return () => clearInterval(interval)
-  }, [handleNewActivity])
-
-  if (isLoading) {
-    return (
-      <section className="py-8 sm:py-12 lg:py-16">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8 sm:mb-12">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">Recent Activities</h2>
-            <p className="text-muted-foreground text-sm sm:text-base max-w-2xl mx-auto">
-              Stay updated with the latest activities across our ecosystem
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {Array.from({ length: 6 }).map((_, index) => (
-              <Card key={index} className="animate-pulse">
-                <CardHeader>
-                  <div className="h-4 bg-muted rounded w-3/4"></div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    <div className="h-3 bg-muted rounded"></div>
-                    <div className="h-3 bg-muted rounded w-2/3"></div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-    )
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5, delay: i * 0.1 },
+    }),
   }
 
   return (
-    <>
-      <section className="py-8 sm:py-12 lg:py-16">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8 sm:mb-12">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold">Recent Activities</h2>
-            </div>
-            <p className="text-muted-foreground text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
-              Stay updated with the latest activities across our ecosystem. Join predictions, discover new tokens,
-              complete quests, and participate in funding rounds.
-            </p>
-          </div>
+    <section ref={sectionRef} className="py-16 md:py-24 bg-black relative overflow-hidden">
+      {/* Simplified background elements */}
+      <div className="absolute inset-0 pointer-events-none opacity-30">
+        <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-gradient-radial from-green-500/10 to-transparent"></div>
+        <div className="absolute bottom-0 left-0 w-1/3 h-1/3 bg-gradient-radial from-blue-500/10 to-transparent"></div>
+      </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8">
-            {activities.map((activity) => (
-              <ActivityCard key={activity.id} activity={activity} onClick={() => handleActivityClick(activity)} />
+      <div className="container mx-auto px-4 relative z-10">
+        <SectionHeader
+          badge="Live Updates"
+          badgeIcon={<Activity className="h-4 w-4" />}
+          title="Recent Activities"
+          description="See what's happening on the Peculia platform in real-time."
+        />
+
+        <div className="max-w-4xl mx-auto">
+          <motion.div className="space-y-3" variants={containerVariants} initial="hidden" animate={controls}>
+            {displayedActivities.map((activity, index) => (
+              <motion.div
+                key={activity.id}
+                custom={index}
+                variants={itemVariants}
+                whileHover={{
+                  scale: 1.01,
+                  transition: { duration: 0.2 },
+                }}
+                className="bg-[#0a0a0a] border border-white/10 hover:border-green-500/30 rounded-lg p-4 transition-all duration-300 group"
+                asChild
+              >
+                <Link href={getActivityRoute(activity)}>
+                  <div className="flex items-start gap-4 cursor-pointer">
+                    <Avatar className="h-10 w-10 border border-white/20 flex-shrink-0">
+                      <AvatarImage src={activity.user.avatar || "/placeholder.svg"} />
+                      <AvatarFallback className="bg-white/10 text-white text-xs">
+                        {activity.user.name.substring(0, 2)}
+                      </AvatarFallback>
+                    </Avatar>
+
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-2 flex-wrap">
+                        <span className="font-medium text-white text-sm">{activity.user.name}</span>
+                        <Badge variant="outline" className={cn("text-xs px-2 py-0.5", getTypeColor(activity.type))}>
+                          <div className="flex items-center gap-1">
+                            {getActivityIcon(activity.type)}
+                            <span className="capitalize">{activity.type}</span>
+                          </div>
+                        </Badge>
+                        {activity.status && (
+                          <Badge
+                            variant="outline"
+                            className={cn("text-xs px-2 py-0.5", getStatusColor(activity.status))}
+                          >
+                            {activity.status}
+                          </Badge>
+                        )}
+                      </div>
+
+                      <h4 className="text-white/90 font-medium mb-1 group-hover:text-white transition-colors">
+                        {activity.title}
+                      </h4>
+                      <p className="text-white/60 text-sm mb-3 line-clamp-2">{activity.description}</p>
+
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3 text-xs text-white/50">
+                          <div className="flex items-center gap-1">
+                            <Clock className="h-3 w-3" />
+                            <span>{activity.timestamp}</span>
+                          </div>
+                          {activity.amount && (
+                            <div
+                              className={cn(
+                                "font-medium px-2 py-1 rounded-md",
+                                activity.type === "prediction"
+                                  ? "bg-green-500/10 text-green-400"
+                                  : activity.type === "token"
+                                    ? "bg-blue-500/10 text-blue-400"
+                                    : activity.type === "quest"
+                                      ? "bg-purple-500/10 text-purple-400"
+                                      : "bg-amber-500/10 text-amber-400",
+                              )}
+                            >
+                              +{activity.amount} PPT
+                            </div>
+                          )}
+                        </div>
+
+                        <ExternalLink className="h-4 w-4 text-white/30 group-hover:text-green-400 transition-colors" />
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
 
-          {hasMore && (
-            <div className="text-center">
-              <Button variant="outline" onClick={loadMoreActivities} className="gap-2 bg-transparent">
-                <Eye className="h-4 w-4" />
-                Load More Activities
+          {/* Single, clear action button */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+            className="mt-8 text-center"
+          >
+            {!showAll && activities.length > 5 ? (
+              <Button
+                variant="outline"
+                className="border-white/20 text-white hover:bg-white/5 hover:border-green-500/30 bg-transparent"
+                onClick={() => setShowAll(true)}
+              >
+                Show {activities.length - 5} More Activities
+                <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
-            </div>
-          )}
-
-          {!hasMore && activities.length > 0 && (
-            <div className="text-center text-muted-foreground text-sm">You've reached the end of recent activities</div>
-          )}
+            ) : (
+              <Link href="/activities">
+                <Button className="bg-green-500/10 text-green-400 hover:bg-green-500/20 border border-green-500/30">
+                  View All Activities
+                  <ExternalLink className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+            )}
+          </motion.div>
         </div>
-      </section>
-
-      <ActivityDetailModal activity={selectedActivity} isOpen={isModalOpen} onClose={handleCloseModal} />
-    </>
+      </div>
+    </section>
   )
 }

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { motion } from "framer-motion"
 import { Lock, Globe, Clock, Eye, PlusCircle } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
@@ -104,7 +105,7 @@ export default function PredictionCard({ prediction }: PredictionCardProps) {
           <div className="flex -space-x-2">
             {visibleParticipants.map((participant, index) => (
               <Avatar key={participant.id} className="h-6 w-6 border border-white/20">
-                <AvatarImage src={participant.avatar} />
+                <AvatarImage src={participant.avatar || "/placeholder.svg"} />
                 <AvatarFallback className="bg-primary/20 text-primary text-[10px]">
                   {participant.name.substring(0, 2).toUpperCase()}
                 </AvatarFallback>
@@ -124,28 +125,22 @@ export default function PredictionCard({ prediction }: PredictionCardProps) {
       </div>
 
       <div className="vertical-card-footer">
-        <div className="flex justify-between items-center">
-          <Button
-            size="sm"
-            className="icon-button"
-            onClick={() => {
-              window.location.href = `/prediction-markets/view/${prediction.id}`
-            }}
-          >
-            <Eye className="h-3.5 w-3.5" />
-            View Details
-          </Button>
+        <div className="flex justify-between items-center gap-2">
+          <Link href={`/prediction-markets/view/${prediction.id}`} className="flex-1">
+            <Button size="sm" className="icon-button w-full">
+              <Eye className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">View Details</span>
+              <span className="sm:hidden">View</span>
+            </Button>
+          </Link>
 
-          <Button
-            size="sm"
-            className="icon-button"
-            onClick={() => {
-              window.location.href = `/prediction-markets/view/${prediction.id}`
-            }}
-          >
-            <PlusCircle className="h-3.5 w-3.5" />
-            Join Bet
-          </Button>
+          <Link href={`/prediction-markets/view/${prediction.id}`} className="flex-1">
+            <Button size="sm" className="icon-button w-full">
+              <PlusCircle className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Join Bet</span>
+              <span className="sm:hidden">Join</span>
+            </Button>
+          </Link>
         </div>
       </div>
     </motion.div>

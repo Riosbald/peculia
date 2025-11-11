@@ -80,15 +80,19 @@ export default function ThemeSelector() {
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+        <Button
+          variant="outline"
+          size="icon"
+          className="rounded-full w-8 h-8 border border-white/30 text-white/30 hover:bg-white/10 hover:text-white/70 absolute top-4 right-4 opacity-20 hover:opacity-100 transition-opacity"
+        >
           <Palette className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-[200px] grid grid-cols-3 gap-1 p-2">
+      <DropdownMenuContent align="end" className="bg-background border-white/30 w-[200px] grid grid-cols-3 gap-1 p-2">
         {themeOptions.map((option) => (
           <DropdownMenuItem
             key={option.value}
-            className="flex flex-col items-center justify-center h-8 w-full cursor-pointer p-0 m-0 rounded-md hover:bg-muted"
+            className="flex flex-col items-center justify-center h-8 w-full cursor-pointer p-0 m-0 rounded-md hover:bg-white/10"
             onClick={() => changeTheme(option.value)}
           >
             <div className={`w-5 h-5 rounded-full ${option.mainColor} flex items-center justify-center`}>

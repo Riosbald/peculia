@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import type React from "react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -26,17 +27,13 @@ const TokenPitchCard: React.FC<TokenPitchCardProps> = ({ pitch }) => {
       </CardContent>
 
       <div className="card-footer">
-        <div className="flex justify-between items-center">
-          <Button
-            size="sm"
-            className="icon-button"
-            onClick={() => {
-              window.location.href = `/token-pitching/view/${pitch.id}`
-            }}
-          >
-            <Eye className="h-3.5 w-3.5" />
-            View Details
-          </Button>
+        <div className="flex justify-between items-center gap-2">
+          <Link href={`/token-pitching/view/${pitch.id}`} className="flex-1">
+            <Button size="sm" className="icon-button w-full">
+              <Eye className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">View</span>
+            </Button>
+          </Link>
 
           <Button
             size="sm"
@@ -47,7 +44,7 @@ const TokenPitchCard: React.FC<TokenPitchCardProps> = ({ pitch }) => {
             }}
           >
             <Award className="h-3.5 w-3.5" />
-            Support
+            <span className="hidden sm:inline">Support</span>
           </Button>
         </div>
       </div>

@@ -2,9 +2,8 @@ import type { Metadata } from "next"
 import GettingStartedClientPage from "./getting-started-client-page"
 
 export const metadata: Metadata = {
-  title: "Getting Started - Peculia Documentation",
-  description:
-    "Learn how to get started with Peculia, including account setup, wallet connection, and platform overview.",
+  title: "Getting Started | Peculia Documentation",
+  description: "Learn the basics of the Peculia multi-chain Web3 platform",
 }
 
 export default function GettingStartedPage() {

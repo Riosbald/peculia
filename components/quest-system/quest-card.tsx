@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import type React from "react"
 import { Card, CardHeader, CardBody } from "@nextui-org/react"
 import { Button } from "@nextui-org/react"
@@ -29,28 +30,22 @@ const QuestCard: React.FC<QuestCardProps> = ({ quest }) => {
       </CardBody>
 
       <div className="card-footer">
-        <div className="flex justify-between items-center">
-          <Button
-            size="sm"
-            className="icon-button"
-            onClick={() => {
-              window.location.href = `/quest-system/view/${quest.id}`
-            }}
-          >
-            <Eye className="h-3.5 w-3.5" />
-            View Details
-          </Button>
+        <div className="flex justify-between items-center gap-2">
+          <Link href={`/quest-system/view/${quest.id}`} className="flex-1">
+            <Button size="sm" className="icon-button w-full">
+              <Eye className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">View Details</span>
+              <span className="sm:hidden">View</span>
+            </Button>
+          </Link>
 
-          <Button
-            size="sm"
-            className="icon-button"
-            onClick={() => {
-              window.location.href = `/quest-system/view/${quest.id}`
-            }}
-          >
-            <Trophy className="h-3.5 w-3.5" />
-            Start Quest
-          </Button>
+          <Link href={`/quest-system/view/${quest.id}`} className="flex-1">
+            <Button size="sm" className="icon-button w-full">
+              <Trophy className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Start Quest</span>
+              <span className="sm:hidden">Start</span>
+            </Button>
+          </Link>
         </div>
       </div>
     </Card>

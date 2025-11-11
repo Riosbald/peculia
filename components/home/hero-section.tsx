@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import { motion, useAnimation, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Copy, Maximize2, Terminal, Dices, TrendingUp, Trophy, Vote, Zap, ArrowRight } from "lucide-react"
+import Link from "next/link"
 
 // Enhanced particle animation for background
 const ParticleBackground = () => {
@@ -242,22 +243,21 @@ export default function HeroSection() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.6 }}
             >
-              <Button
-                className="bg-green-500 text-white hover:bg-green-600 shadow-lg shadow-green-500/30 px-8 py-6 h-auto text-xl font-medium rounded-xl"
-                onClick={() => (window.location.href = "/claim")}
-              >
-                <motion.div className="flex items-center" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Zap className="h-6 w-6 mr-2" />
-                  Claim 1,000 PPT
-                  <motion.div
-                    animate={{ x: [0, 5, 0] }}
-                    transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY, repeatType: "loop" }}
-                    className="ml-2"
-                  >
-                    <ArrowRight className="h-6 w-6" />
+              <Link href="/portfolio">
+                <Button className="bg-green-500 text-white hover:bg-green-600 shadow-lg shadow-green-500/30 px-8 py-6 h-auto text-xl font-medium rounded-xl">
+                  <motion.div className="flex items-center" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Zap className="h-6 w-6 mr-2" />
+                    Claim 1,000 PPT
+                    <motion.div
+                      animate={{ x: [0, 5, 0] }}
+                      transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY, repeatType: "loop" }}
+                      className="ml-2"
+                    >
+                      <ArrowRight className="h-6 w-6" />
+                    </motion.div>
                   </motion.div>
-                </motion.div>
-              </Button>
+                </Button>
+              </Link>
             </motion.div>
 
             <AnimatePresence>

@@ -4,6 +4,7 @@ import { useRef, useEffect, useState } from "react"
 import { motion, useAnimation, useInView, AnimatePresence } from "framer-motion"
 import { Dices, TrendingUp, Trophy, Users, Zap, Shield, Database, Sparkles } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { SectionHeader } from "@/components/ui/section-header"
 
 const flowLines = {
   hidden: { pathLength: 0, opacity: 0 },
@@ -181,35 +182,12 @@ export default function HowItWorksSection() {
         ))}
 
       <div className="container mx-auto px-4 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={controls}
-          variants={{
-            visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
-          }}
-          className="text-center max-w-3xl mx-auto mb-16"
-        >
-          <div className="inline-flex items-center mb-3 bg-green-500/10 px-4 py-1 rounded-full">
-            <Sparkles className="h-4 w-4 text-green-500 mr-2" />
-            <span className="text-green-500 text-sm font-medium">Interactive Workflow</span>
-          </div>
-          <h2 className="text-3xl md:text-5xl font-bold text-white mb-4 font-mono leading-tight">
-            <span className="relative">
-              How Peculia Works
-              <motion.span
-                className="absolute -bottom-2 left-0 h-1 bg-green-500/50 rounded-full"
-                initial={{ width: 0 }}
-                whileInView={{ width: "100%" }}
-                transition={{ duration: 1, delay: 0.5 }}
-                viewport={{ once: true }}
-              />
-            </span>
-          </h2>
-          <p className="text-lg text-white/80">
-            Our platform connects users, AI, and blockchain in a seamless ecosystem that rewards participation and
-            verification.
-          </p>
-        </motion.div>
+        <SectionHeader
+          badge="Interactive Workflow"
+          badgeIcon={<Sparkles className="h-4 w-4" />}
+          title="How Peculia Works"
+          description="Our platform connects users, AI, and blockchain in a seamless ecosystem that rewards participation and verification."
+        />
 
         {/* Restructured flow diagram for better responsiveness */}
         <div className="max-w-6xl mx-auto">

@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { createContext, useContext, useState, useEffect } from "react"
-import { ethers } from "ethers"
+import { formatEther, parseEther } from "ethers"
 
 // Define supported chains
 export enum ChainType {
@@ -77,8 +77,7 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({ children
         case ChainType.ETHEREUM:
         case ChainType.BSC:
         case ChainType.POLYGON:
-          // Mock EVM balance fetch
-          bal = ethers.utils.formatEther(ethers.utils.parseEther("1.5"))
+          bal = formatEther(parseEther("1.5"))
           break
 
         case ChainType.SOLANA:

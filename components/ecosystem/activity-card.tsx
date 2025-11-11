@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-
+import Link from "next/link"
 import { useState } from "react"
 import { motion } from "framer-motion"
 import { Clock, Users, ArrowRight, MessageSquare, ThumbsUp, Share2 } from "lucide-react"
@@ -104,119 +104,119 @@ export default function ActivityCard({ activity }: ActivityCardProps) {
     }
   }
 
+  const getActivityRoute = () => {
+    switch (activity.type) {
+      case "prediction":
+        return `/prediction-markets/view/${activity.id}`
+      case "token":
+        return `/token-pitching/view/${activity.id}`
+      case "quest":
+        return `/quest-system/view/${activity.id}`
+      case "governance":
+        return `/quadratic-funding/view/${activity.id}`
+      default:
+        return `/activity/${activity.id}`
+    }
+  }
+
   return (
-    <motion.div
-      className="p-4 border rounded-lg bg-background/50 backdrop-blur-sm"
-      style={{
-        borderColor: isHovered ? "rgba(16, 185, 129, 0.5)" : "rgba(255, 255, 255, 0.1)",
-        backgroundColor: activity.backgroundColor || "rgba(0, 0, 0, 0.7)",
-      }}
-      whileHover={{
-        y: -5,
-        boxShadow: "0 10px 25px -5px rgba(16, 185, 129, 0.3)",
-      }}
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
-      onClick={() => (window.location.href = `/activity/${activity.id}`)}
-      layout
-    >
-      <div className="flex items-start">
-        {getTypeIcon()}
+    <Link href={`/activity/${activity.id}`}>
+      <motion.div
+        className="p-4 border rounded-lg bg-background/50 backdrop-blur-sm cursor-pointer"
+        style={{
+          borderColor: isHovered ? "rgba(16, 185, 129, 0.5)" : "rgba(255, 255, 255, 0.1)",
+          backgroundColor: activity.backgroundColor || "rgba(0, 0, 0, 0.7)",
+        }}
+        whileHover={{
+          y: -5,
+          boxShadow: "0 10px 25px -5px rgba(16, 185, 129, 0.3)",
+        }}
+        onHoverStart={() => setIsHovered(true)}
+        onHoverEnd={() => setIsHovered(false)}
+        layout
+      >
+        <div className="flex items-start">
+          {getTypeIcon()}
 
-        <div className="ml-4 flex-1">
-          <div className="flex items-center justify-between">
-            <h3 className="text-white font-bold">{activity.title}</h3>
+          <div className="ml-4 flex-1">
+            <div className="flex items-center justify-between">
+              <h3 className="text-white font-bold">{activity.title}</h3>
 
-            <div className="flex items-center space-x-2">
-              <Badge className={`${getTypeColor()} border-none text-xs`}>
-                {activity.type.charAt(0).toUpperCase() + activity.type.slice(1)}
-              </Badge>
+              <div className="flex items-center space-x-2">
+                <Badge className={`${getTypeColor()} border-none text-xs`}>
+                  {activity.type.charAt(0).toUpperCase() + activity.type.slice(1)}
+                </Badge>
 
-              {activity.status && (
-                <Badge className={`${getStatusColor()} border-none text-xs`}>{activity.status}</Badge>
-              )}
+                {activity.status && (
+                  <Badge className={`${getStatusColor()} border-none text-xs`}>{activity.status}</Badge>
+                )}
+              </div>
             </div>
-          </div>
 
-          <div className="flex items-center mt-2 text-xs text-white/60">
-            <Avatar className="h-5 w-5 mr-1.5">
-              <AvatarImage src={activity.creator.avatar} />
-              <AvatarFallback className="bg-primary/20 text-primary text-[8px]">
-                {activity.creator.name.substring(0, 2).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <span>{activity.creator.name}</span>
-            <span className="mx-2">•</span>
-            <Clock className="h-3 w-3 mr-1" />
-            <span>{activity.timeAgo}</span>
-          </div>
+            <div className="flex items-center mt-2 text-xs text-white/60">
+              <Avatar className="h-5 w-5 mr-1.5">
+                <AvatarImage src={activity.creator.avatar || "/placeholder.svg"} />
+                <AvatarFallback className="bg-primary/20 text-primary text-[8px]">
+                  {activity.creator.name.substring(0, 2).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <span>{activity.creator.name}</span>
+              <span className="mx-2">•</span>
+              <Clock className="h-3 w-3 mr-1" />
+              <span>{activity.timeAgo}</span>
+            </div>
 
-          <div className="flex items-center justify-between mt-4">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center text-white/70">
-                <Users className="h-3.5 w-3.5 mr-1.5" />
-                <span className="text-xs">{activity.participants}</span>
-              </div>
+            <div className="flex items-center justify-between mt-4">
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center text-white/70">
+                  <Users className="h-3.5 w-3.5 mr-1.5" />
+                  <span className="text-xs">{activity.participants}</span>
+                </div>
 
-              <div className="flex items-center text-white/70">
-                <MessageSquare className="h-3.5 w-3.5 mr-1.5" />
-                <span className="text-xs">{activity.comments}</span>
-              </div>
+                <div className="flex items-center text-white/70">
+                  <MessageSquare className="h-3.5 w-3.5 mr-1.5" />
+                  <span className="text-xs">{activity.comments}</span>
+                </div>
 
-              <Button
-                size="sm"
-                variant="ghost"
-                className={`h-7 px-2 ${isLiked ? "text-green-500" : "text-white/70"}`}
-                onClick={handleLike}
-              >
-                <ThumbsUp className="h-3.5 w-3.5 mr-1.5" />
-                <motion.span
-                  key={likeCount}
-                  initial={{ opacity: 0, y: -5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="text-xs"
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className={`h-7 px-2 ${isLiked ? "text-green-500" : "text-white/70"}`}
+                  onClick={handleLike}
                 >
-                  {likeCount}
-                </motion.span>
-              </Button>
-            </div>
+                  <ThumbsUp className="h-3.5 w-3.5 mr-1.5" />
+                  <motion.span
+                    key={likeCount}
+                    initial={{ opacity: 0, y: -5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="text-xs"
+                  >
+                    {likeCount}
+                  </motion.span>
+                </Button>
+              </div>
 
-            <div className="flex items-center space-x-2">
-              <Button size="sm" variant="ghost" className="h-7 px-2 text-white/70" onClick={handleShare}>
-                <Share2 className="h-3.5 w-3.5" />
-              </Button>
+              <div className="flex items-center space-x-2">
+                <Button size="sm" variant="ghost" className="h-7 px-2 text-white/70" onClick={handleShare}>
+                  <Share2 className="h-3.5 w-3.5" />
+                </Button>
 
-              <Button
-                size="sm"
-                className="h-7 bg-green-500/20 text-green-500 hover:bg-green-500/30 border border-green-500/30"
-                onClick={() => {
-                  // Determine the correct URL based on activity type
-                  let url = "/"
-                  switch (activity.type) {
-                    case "prediction":
-                      url = `/prediction-markets/view/${activity.id}`
-                      break
-                    case "token":
-                      url = `/token-pitching/view/${activity.id}`
-                      break
-                    case "quest":
-                      url = `/quest-system/view/${activity.id}`
-                      break
-                    case "governance":
-                      url = `/quadratic-funding/view/${activity.id}`
-                      break
-                  }
-                  window.location.href = url
-                }}
-              >
-                <span className="text-xs">View</span>
-                <ArrowRight className="h-3 w-3 ml-1" />
-              </Button>
+                <Button
+                  asChild
+                  size="sm"
+                  className="h-7 bg-green-500/20 text-green-500 hover:bg-green-500/30 border border-green-500/30"
+                >
+                  <Link href={`${getActivityRoute()}`}>
+                    <span className="text-xs">View</span>
+                    <ArrowRight className="h-3 w-3 ml-1" />
+                  </Link>
+                </Button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </motion.div>
+      </motion.div>
+    </Link>
   )
 }
