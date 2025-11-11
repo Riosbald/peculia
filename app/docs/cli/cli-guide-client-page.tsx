@@ -4,10 +4,9 @@ import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
-import { ChevronRight, Book, Code, Terminal, ArrowRight, CheckCircle } from 'lucide-react'
-import { Button } from "@/components/ui/button"
+import { ChevronRight, Book, Code } from "lucide-react"
 
-export default function GettingStartedClientPage() {
+export default function CliGuideClientPage() {
   const [activeSection, setActiveSection] = useState("introduction")
   const router = useRouter()
 
@@ -28,7 +27,7 @@ export default function GettingStartedClientPage() {
           {/* Sidebar */}
           <div className="lg:w-1/4">
             <div className="sticky top-24 bg-[#0a0a0a] rounded-lg border border-white/10 p-4">
-              <h3 className="text-white font-medium mb-4">Getting Started</h3>
+              <h3 className="text-white font-medium mb-4">CLI Guide</h3>
               <nav className="space-y-1">
                 <button
                   onClick={() => scrollToSection("introduction")}
@@ -41,64 +40,44 @@ export default function GettingStartedClientPage() {
                   <span>Introduction</span>
                 </button>
                 <button
-                  onClick={() => scrollToSection("prerequisites")}
+                  onClick={() => scrollToSection("installation")}
                   className={`w-full flex items-center px-3 py-2 text-sm rounded-md transition-colors ${
-                    activeSection === "prerequisites"
+                    activeSection === "installation"
                       ? "bg-[#10b981]/10 text-[#10b981]"
                       : "text-white/70 hover:text-white hover:bg-white/5"
                   }`}
                 >
-                  <span>Prerequisites</span>
+                  <span>Installation</span>
                 </button>
                 <button
-                  onClick={() => scrollToSection("account-setup")}
+                  onClick={() => scrollToSection("basic-commands")}
                   className={`w-full flex items-center px-3 py-2 text-sm rounded-md transition-colors ${
-                    activeSection === "account-setup"
+                    activeSection === "basic-commands"
                       ? "bg-[#10b981]/10 text-[#10b981]"
                       : "text-white/70 hover:text-white hover:bg-white/5"
                   }`}
                 >
-                  <span>Account Setup</span>
+                  <span>Basic Commands</span>
                 </button>
                 <button
-                  onClick={() => scrollToSection("wallet-connection")}
+                  onClick={() => scrollToSection("advanced-usage")}
                   className={`w-full flex items-center px-3 py-2 text-sm rounded-md transition-colors ${
-                    activeSection === "wallet-connection"
+                    activeSection === "advanced-usage"
                       ? "bg-[#10b981]/10 text-[#10b981]"
                       : "text-white/70 hover:text-white hover:bg-white/5"
                   }`}
                 >
-                  <span>Wallet Connection</span>
+                  <span>Advanced Usage</span>
                 </button>
                 <button
-                  onClick={() => scrollToSection("ecosystem-overview")}
+                  onClick={() => scrollToSection("troubleshooting")}
                   className={`w-full flex items-center px-3 py-2 text-sm rounded-md transition-colors ${
-                    activeSection === "ecosystem-overview"
+                    activeSection === "troubleshooting"
                       ? "bg-[#10b981]/10 text-[#10b981]"
                       : "text-white/70 hover:text-white hover:bg-white/5"
                   }`}
                 >
-                  <span>Ecosystem Overview</span>
-                </button>
-                <button
-                  onClick={() => scrollToSection("first-steps")}
-                  className={`w-full flex items-center px-3 py-2 text-sm rounded-md transition-colors ${
-                    activeSection === "first-steps"
-                      ? "bg-[#10b981]/10 text-[#10b981]"
-                      : "text-white/70 hover:text-white hover:bg-white/5"
-                  }`}
-                >
-                  <span>First Steps</span>
-                </button>
-                <button
-                  onClick={() => scrollToSection("next-steps")}
-                  className={`w-full flex items-center px-3 py-2 text-sm rounded-md transition-colors ${
-                    activeSection === "next-steps"
-                      ? "bg-[#10b981]/10 text-[#10b981]"
-                      : "text-white/70 hover:text-white hover:bg-white/5"
-                  }`}
-                >
-                  <span>Next Steps</span>
+                  <span>Troubleshooting</span>
                 </button>
               </nav>
 
@@ -113,18 +92,18 @@ export default function GettingStartedClientPage() {
                     <span>Documentation Home</span>
                   </Link>
                   <Link
+                    href="/docs/getting-started"
+                    className="flex items-center px-3 py-2 text-sm rounded-md text-white/70 hover:text-white hover:bg-white/5 transition-colors"
+                  >
+                    <ChevronRight size={14} className="mr-2" />
+                    <span>Getting Started</span>
+                  </Link>
+                  <Link
                     href="/docs/api"
                     className="flex items-center px-3 py-2 text-sm rounded-md text-white/70 hover:text-white hover:bg-white/5 transition-colors"
                   >
                     <Code size={14} className="mr-2" />
                     <span>API Reference</span>
-                  </Link>
-                  <Link
-                    href="/docs/cli"
-                    className="flex items-center px-3 py-2 text-sm rounded-md text-white/70 hover:text-white hover:bg-white/5 transition-colors"
-                  >
-                    <Terminal size={14} className="mr-2" />
-                    <span>CLI Guide</span>
                   </Link>
                 </div>
               </div>
@@ -134,149 +113,143 @@ export default function GettingStartedClientPage() {
           {/* Main Content */}
           <div className="lg:w-3/4">
             <div className="bg-[#0a0a0a] rounded-lg border border-white/10 p-6">
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
-              >
-                <h1 className="text-3xl font-bold text-white mb-6">Getting Started with Peculia</h1>
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
+                <h1 className="text-3xl font-bold text-white mb-6">Peculia CLI Guide</h1>
 
                 <section id="introduction" className="mb-12">
                   <h2 className="text-2xl font-semibold text-white mb-4">Introduction</h2>
                   <div className="text-white/80 space-y-4">
                     <p>
-                      Welcome to Peculia, a multi-chain Web3 platform that enables decentralized prediction markets, token
-                      pitching, and quadratic governance across multiple blockchains. This guide will help you get started
-                      with the platform and explore its features.
+                      The Peculia CLI (Command-Line Interface) is a powerful tool for developers and advanced users to
+                      interact with the Peculia platform directly from the terminal. This guide covers installation,
+                      basic commands, and advanced usage patterns.
                     </p>
                     <p>
-                      Peculia is designed to be intuitive and user-friendly, even for those new to Web3. Our platform
-                      combines several innovative features to create a unique ecosystem for decentralized applications and
-                      governance.
+                      Whether you're building integrations, managing predictions, or automating workflows, the CLI
+                      provides a flexible and efficient way to interact with all Peculia features.
                     </p>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                  </div>
+                </section>
+
+                <section id="installation" className="mb-12">
+                  <h2 className="text-2xl font-semibold text-white mb-4">Installation</h2>
+                  <div className="text-white/80 space-y-4">
+                    <p>Install the Peculia CLI using npm or yarn:</p>
+                    <div className="bg-[#1a1a1a] p-4 rounded-lg font-mono text-sm overflow-x-auto">
+                      <code className="text-[#10b981]">npm install -g @peculia/cli</code>
+                    </div>
+                    <p>Or with yarn:</p>
+                    <div className="bg-[#1a1a1a] p-4 rounded-lg font-mono text-sm overflow-x-auto">
+                      <code className="text-[#10b981]">yarn global add @peculia/cli</code>
+                    </div>
+                    <p>Verify installation:</p>
+                    <div className="bg-[#1a1a1a] p-4 rounded-lg font-mono text-sm overflow-x-auto">
+                      <code className="text-[#10b981]">peculia --version</code>
+                    </div>
+                  </div>
+                </section>
+
+                <section id="basic-commands" className="mb-12">
+                  <h2 className="text-2xl font-semibold text-white mb-4">Basic Commands</h2>
+                  <div className="text-white/80 space-y-4">
+                    <div className="space-y-4">
                       <div className="bg-[#1a1a1a] p-4 rounded-lg">
-                        <h3 className="text-white font-medium mb-2">Prediction Markets</h3>
-                        <p className="text-sm text-white/70">
-                          Create and participate in AI-verified predictions about future events, with real-time market data
-                          and transparent resolution.
-                        </p>
+                        <h3 className="text-white font-medium mb-2">Authentication</h3>
+                        <div className="bg-black p-3 rounded font-mono text-sm text-[#10b981] overflow-x-auto">
+                          <code>peculia login</code>
+                        </div>
+                        <p className="text-sm text-white/70 mt-2">Authenticate with your Peculia account.</p>
                       </div>
+
                       <div className="bg-[#1a1a1a] p-4 rounded-lg">
-                        <h3 className="text-white font-medium mb-2">Token Pitching</h3>
-                        <p className="text-sm text-white/70">
-                          Simulate and evaluate token ideas before launching them, with comprehensive tokenomics analysis and
-                          community feedback.
-                        </p>
+                        <h3 className="text-white font-medium mb-2">List Predictions</h3>
+                        <div className="bg-black p-3 rounded font-mono text-sm text-[#10b981] overflow-x-auto">
+                          <code>peculia predictions list</code>
+                        </div>
+                        <p className="text-sm text-white/70 mt-2">Display all active predictions.</p>
                       </div>
+
                       <div className="bg-[#1a1a1a] p-4 rounded-lg">
-                        <h3 className="text-white font-medium mb-2">Quest System</h3>
-                        <p className="text-sm text-white/70">
-                          Complete missions to earn rewards and governance rights, with gamified experiences that encourage
-                          platform participation.
-                        </p>
-                      </div>
-                      <div className="bg-[#1a1a1a] p-4 rounded-lg">
-                        <h3 className="text-white font-medium mb-2">Quadratic Funding</h3>
-                        <p className="text-sm text-white/70">
-                          Fair governance with square root of proportional voting power, ensuring that collective preferences
-                          are accurately represented.
-                        </p>
+                        <h3 className="text-white font-medium mb-2">Create Prediction</h3>
+                        <div className="bg-black p-3 rounded font-mono text-sm text-[#10b981] overflow-x-auto">
+                          <code>peculia predictions create --title "Event Name" --deadline 2024-12-31</code>
+                        </div>
+                        <p className="text-sm text-white/70 mt-2">Create a new prediction event.</p>
                       </div>
                     </div>
                   </div>
                 </section>
 
-                <section id="prerequisites" className="mb-12">
-                  <h2 className="text-2xl font-semibold text-white mb-4">Prerequisites</h2>
+                <section id="advanced-usage" className="mb-12">
+                  <h2 className="text-2xl font-semibold text-white mb-4">Advanced Usage</h2>
                   <div className="text-white/80 space-y-4">
-                    <p>Before you begin using Peculia, ensure you have the following:</p>
-                    <ul className="list-disc pl-6 space-y-2">
-                      <li>
-                        <strong>Web3 Wallet:</strong> You'll need a Web3 wallet like MetaMask, WalletConnect, or any other
-                        compatible wallet to interact with the blockchain features of Peculia.
-                      </li>
-                      <li>
-                        <strong>Cryptocurrency:</strong> Depending on the blockchain you choose to interact with, you'll need
-                        some cryptocurrency for gas fees (ETH for Ethereum, MATIC for Polygon, etc.).
-                      </li>
-                      <li>
-                        <strong>Basic Understanding:</strong> While Peculia is designed to be user-friendly, a basic
-                        understanding of blockchain concepts will be helpful.
-                      </li>
-                    </ul>
+                    <p>The CLI supports batch operations and scripting:</p>
+                    <div className="bg-[#1a1a1a] p-4 rounded-lg">
+                      <h3 className="text-white font-medium mb-3">Batch Operations</h3>
+                      <div className="bg-black p-3 rounded font-mono text-sm text-[#10b981] overflow-x-auto">
+                        <code>peculia batch --file predictions.json</code>
+                      </div>
+                      <p className="text-sm text-white/70 mt-2">Process multiple operations from a JSON file.</p>
+                    </div>
                     <div className="bg-[#1a1a1a] p-4 rounded-lg mt-4">
-                      <h3 className="text-white font-medium mb-2">Supported Wallets</h3>
-                      <ul className="grid grid-cols-1 md:grid-cols-3 gap-2 text-sm">
-                        <li className="flex items-center text-white/70">
-                          <CheckCircle size={14} className="text-[#10b981] mr-2" />
-                          MetaMask
-                        </li>
-                        <li className="flex items-center text-white/70">
-                          <CheckCircle size={14} className="text-[#10b981] mr-2" />
-                          WalletConnect
-                        </li>
-                        <li className="flex items-center text-white/70">
-                          <CheckCircle size={14} className="text-[#10b981] mr-2" />
-                          Coinbase Wallet
-                        </li>
-                        <li className="flex items-center text-white/70">
-                          <CheckCircle size={14} className="text-[#10b981] mr-2" />
-                          Trust Wallet
-                        </li>
-                        <li className="flex items-center text-white/70">
-                          <CheckCircle size={14} className="text-[#10b981] mr-2" />
-                          Rainbow
-                        </li>
-                        <li className="flex items-center text-white/70">
-                          <CheckCircle size={14} className="text-[#10b981] mr-2" />
-                          Ledger Live
-                        </li>
-                      </ul>
+                      <h3 className="text-white font-medium mb-3">Export Data</h3>
+                      <div className="bg-black p-3 rounded font-mono text-sm text-[#10b981] overflow-x-auto">
+                        <code>peculia export --format csv --output data.csv</code>
+                      </div>
+                      <p className="text-sm text-white/70 mt-2">Export platform data in various formats.</p>
                     </div>
                   </div>
                 </section>
 
-                <section id="account-setup" className="mb-12">
-                  <h2 className="text-2xl font-semibold text-white mb-4">Account Setup</h2>
+                <section id="troubleshooting" className="mb-12">
+                  <h2 className="text-2xl font-semibold text-white mb-4">Troubleshooting</h2>
                   <div className="text-white/80 space-y-4">
-                    <p>
-                      Setting up your Peculia account is quick and straightforward. Follow these steps to create your
-                      account:
-                    </p>
-                    <ol className="list-decimal pl-6 space-y-4">
-                      <li>
-                        <strong>Visit the Sign Up Page:</strong> Navigate to the{" "}
-                        <Link href="/signup" className="text-[#10b981] hover:underline">
-                          Sign Up page
-                        </Link>{" "}
-                        to begin the registration process.
-                      </li>
-                      <li>
-                        <strong>Choose Your Registration Method:</strong> You can sign up using your email address or connect
-                        directly with your Web3 wallet.
-                      </li>
-                      <li>
-                        <strong>Complete Your Profile:</strong> Add your username, profile picture, and other details to
-                        personalize your account.
-                      </li>
-                      <li>
-                        <strong>Verify Your Email:</strong> If you signed up with email, verify your email address by
-                        clicking the link sent to your inbox.
-                      </li>
-                      <li>
-                        <strong>Set Your Preferences:</strong> Configure your notification settings, privacy preferences, and
-                        other account options.
-                      </li>
-                    </ol>
-                    <div className="bg-[#1a1a1a] p-4 rounded-lg mt-4">
-                      <h3 className="text-white font-medium mb-2">Security Recommendations</h3>
-                      <ul className="space-y-2 text-sm text-white/70">
-                        <li className="flex items-start">
-                          <CheckCircle size={14} className="text-[#10b981] mr-2 mt-1" />
-                          <span>
-                            Use a strong, unique password that you don't use for other services.
-                          </span>
-                        </li>
-                        <li className="flex items-start">
-                          <CheckCircle size={14} className="text-[#10b981
+                    <div className="bg-[#1a1a1a] p-4 rounded-lg">
+                      <h3 className="text-white font-medium mb-2">Command Not Found</h3>
+                      <p className="text-sm text-white/70">
+                        Ensure the CLI is properly installed and your PATH includes the npm global bin directory. Try
+                        reinstalling with:{" "}
+                        <code className="bg-black px-2 py-1 rounded text-[#10b981]">npm install -g @peculia/cli</code>
+                      </p>
+                    </div>
+                    <div className="bg-[#1a1a1a] p-4 rounded-lg">
+                      <h3 className="text-white font-medium mb-2">Authentication Errors</h3>
+                      <p className="text-sm text-white/70">
+                        Clear your stored credentials and login again:{" "}
+                        <code className="bg-black px-2 py-1 rounded text-[#10b981]">
+                          peculia logout && peculia login
+                        </code>
+                      </p>
+                    </div>
+                    <div className="bg-[#1a1a1a] p-4 rounded-lg">
+                      <h3 className="text-white font-medium mb-2">Network Issues</h3>
+                      <p className="text-sm text-white/70">
+                        Check your internet connection and ensure you have access to the Peculia servers. Test with:{" "}
+                        <code className="bg-black px-2 py-1 rounded text-[#10b981]">peculia status</code>
+                      </p>
+                    </div>
+                  </div>
+                </section>
+
+                <div className="mt-12 p-6 bg-[#10b981]/10 border border-[#10b981]/20 rounded-lg">
+                  <h3 className="text-white font-medium mb-2">Need Help?</h3>
+                  <p className="text-white/70 text-sm">
+                    For additional support, visit our{" "}
+                    <Link href="/contact" className="text-[#10b981] hover:underline">
+                      contact page
+                    </Link>{" "}
+                    or check the{" "}
+                    <Link href="/docs" className="text-[#10b981] hover:underline">
+                      main documentation
+                    </Link>
+                    .
+                  </p>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
