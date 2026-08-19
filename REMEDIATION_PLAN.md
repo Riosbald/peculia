@@ -13,7 +13,7 @@
 ---
 
 **Branch:** `arena/01a019e9-peculia` · **Base commit:** `4037263` · **Date:** 2026-08-19
-**Status:** Plan (implementation to be executed in sequenced PRs — see §10)
+**Status:** Plan (implementation in progress — see §10 for per-PR status)
 
 ---
 
@@ -1089,8 +1089,17 @@ export async function fetchPredictionCandidates(query: PredictionQuery): Promise
 
 ## 10. Suggested Commit Sequence (each = one reviewable PR)
 
-1. `chore: re-enable lint/tsc/image-optimization; add eslint+prettier configs` (fix fallout; keep rules advisory first, escalate to `error` in PR 3)
-2. `fix: remove fake page loader and render-time randomness; delete duplicate modules`
+> **Implementation status:** ✅ PRs 1–2 shipped. Notes on deviations from this plan
+> are marked inline below.
+
+1. ✅ `chore: re-enable lint/tsc/image-optimization; add eslint+prettier configs` (fix fallout; keep rules advisory first, escalate to `error` in PR 3)
+   - **Deviation:** shipped as `.eslintrc.json` (ESLint 8) instead of the flat `eslint.config.mjs` example in §5.3 — Next 14.2's build-time lint step bundles ESLint 8 and cannot read flat configs; keeping legacy config keeps lint enforcement working inside `next build` (incl. Vercel). Flat-config migration rides the Next 15 upgrade.
+   - **Deviation:** `eslint-plugin-boundaries` was installed, then dropped — v7's element patterns match **folders**, not files, and the policy schema changed (`boundaries/dependencies`, selector objects). Re-introduce with the correct v7 schema in PR 3 (per-repo `data/`-ghetto enforcement, per-commit green).
+   - **Deviation:** `@types/react` pinned to `^18.3` rather than `^19`: react-spring's types require the legacy global `JSX` namespace, which 18.3 still ships and 19 removed.
+   - **Added:** fonts self-hosted via `@fontsource` (removes the Google Fonts egress dependency that fails builds on restricted networks — the plan's "placeholder assets" finding); recharts pinned `^2.15.4` and `react-spring` pinned `^10.0.3` after floating `"latest"` specs drifted to breaking majors.
+2. ✅ `fix: remove fake page loader and render-time randomness; delete duplicate modules`
+   - **Deviation:** render-time randomness fixes landed in PR 1 instead — re-enabling the build pipeline made them blocking fallout (the `/auth` page crashed static generation via `window.innerWidth` in render).
+   - Deleted: `components/ui/page-loading.tsx` (+ layout wiring), duplicate `hooks/use-toast.ts` (consumers now all use `@/components/ui/use-toast`), duplicate `app/components/ThemeSelector.tsx`.
 3. `refactor: real EIP-1193 wallet provider + slimmed WalletConnect button + chain registry`
 4. `feat: prediction data-source interface + /api/predictions route handler + zod validation`
 5. `refactor: migrate data hooks to TanStack Query (kill fake setTimeout APIs)`

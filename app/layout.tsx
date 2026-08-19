@@ -11,7 +11,6 @@ import { Web3Provider } from "@/components/providers/web3-provider"
 import { ThemeProvider } from "@/components/theme-provider"
 import Header from "@/components/layout/header"
 import Footer from "@/components/layout/footer"
-import PageLoading from "@/components/ui/page-loading"
 
 export const metadata: Metadata = {
   title: "Peculia | Multi-Chain Web3 Platform",
@@ -36,7 +35,6 @@ export default function RootLayout({
       <body className="font-sans min-h-screen bg-black text-white flex flex-col touch-manipulation">
         <ThemeProvider>
           <Web3Provider>
-            <PageLoading />
             <div className="flex flex-col min-h-screen">
               <Header />
               <main className="flex-1">{children}</main>
