@@ -1,12 +1,12 @@
 "use client"
 
 import { useRef, useEffect, useState } from "react"
-import { motion, useAnimation, useInView, AnimatePresence } from "framer-motion"
+import { motion, useAnimation, useInView, AnimatePresence, type Variants } from "framer-motion"
 import { Dices, TrendingUp, Trophy, Users, Zap, Shield, Database, Sparkles } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { SectionHeader } from "@/components/ui/section-header"
 
-const flowLines = {
+const flowLines: Variants = {
   hidden: { pathLength: 0, opacity: 0 },
   visible: (custom: number) => ({
     pathLength: 1,
@@ -129,16 +129,32 @@ export default function HowItWorksSection() {
     }
   }, [controls, isInView])
 
-  // Floating particles animation
-  const particleCount = 20
-  const particles = Array.from({ length: particleCount }).map((_, i) => ({
-    id: i,
-    size: Math.random() * 4 + 2,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    duration: Math.random() * 20 + 10,
-    delay: Math.random() * 5,
-  }))
+  // Floating particles animation — seeded once after mount to keep
+  // SSR/hydration deterministic and stop re-rolling on every render.
+  const [particles, setParticles] = useState<
+    { id: number; size: number; x: number; y: number; duration: number; delay: number; dx: number[]; dy: number[] }[]
+  >([])
+
+  useEffect(() => {
+    const drift = () => [
+      Math.random() * 100 - 50,
+      Math.random() * 100 - 50,
+      Math.random() * 100 - 50,
+      Math.random() * 100 - 50,
+    ]
+    setParticles(
+      Array.from({ length: 20 }, (_, i) => ({
+        id: i,
+        size: Math.random() * 4 + 2,
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        duration: Math.random() * 20 + 10,
+        delay: Math.random() * 5,
+        dx: drift(),
+        dy: drift(),
+      })),
+    )
+  }, [])
 
   return (
     <section ref={ref} className="py-16 md:py-24 bg-background relative overflow-hidden">
@@ -158,18 +174,8 @@ export default function HowItWorksSection() {
               top: `${particle.y}%`,
             }}
             animate={{
-              x: [
-                Math.random() * 100 - 50,
-                Math.random() * 100 - 50,
-                Math.random() * 100 - 50,
-                Math.random() * 100 - 50,
-              ],
-              y: [
-                Math.random() * 100 - 50,
-                Math.random() * 100 - 50,
-                Math.random() * 100 - 50,
-                Math.random() * 100 - 50,
-              ],
+              x: particle.dx,
+              y: particle.dy,
               opacity: [0.1, 0.5, 0.3, 0.1],
             }}
             transition={{

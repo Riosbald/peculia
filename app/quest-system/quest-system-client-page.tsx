@@ -36,7 +36,7 @@ interface Quest {
   id: string
   title: string
   description: string
-  type: "daily" | "weekly" | "special" | "achievement"
+  type: "daily" | "weekly" | "special" | "achievement" | "onboarding"
   category: QuestCategory
   reward: {
     ppt: number

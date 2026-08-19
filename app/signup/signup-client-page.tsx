@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import { ArrowRight, ChevronLeft, Eye, EyeOff, Loader2 } from "lucide-react"
@@ -61,14 +61,22 @@ export default function SignUpClientPage() {
     }
   }
 
-  // Particle animation for background
-  const particles = Array.from({ length: 20 }).map((_, i) => ({
-    id: i,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    size: Math.random() * 3 + 1,
-    duration: Math.random() * 20 + 10,
-  }))
+  // Particle animation for background — seeded after mount so SSR/hydration stay deterministic
+  const [particles, setParticles] = useState<
+    { id: number; x: number; y: number; size: number; duration: number }[]
+  >([])
+
+  useEffect(() => {
+    setParticles(
+      Array.from({ length: 20 }, (_, i) => ({
+        id: i,
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        size: Math.random() * 3 + 1,
+        duration: Math.random() * 20 + 10,
+      })),
+    )
+  }, [])
 
   return (
     <div className="min-h-screen pt-16 sm:pt-20 pb-12 sm:pb-16 flex items-center justify-center relative overflow-hidden">

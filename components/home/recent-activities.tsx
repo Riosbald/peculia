@@ -235,18 +235,20 @@ export default function RecentActivitiesSection() {
         <div className="max-w-4xl mx-auto">
           <motion.div className="space-y-3" variants={containerVariants} initial="hidden" animate={controls}>
             {displayedActivities.map((activity, index) => (
-              <motion.div
+              <Link
                 key={activity.id}
-                custom={index}
-                variants={itemVariants}
-                whileHover={{
-                  scale: 1.01,
-                  transition: { duration: 0.2 },
-                }}
-                className="bg-[#0a0a0a] border border-white/10 hover:border-green-500/30 rounded-lg p-4 transition-all duration-300 group"
-                asChild
+                href={getActivityRoute(activity)}
+                className="block group"
               >
-                <Link href={getActivityRoute(activity)}>
+                <motion.div
+                  custom={index}
+                  variants={itemVariants}
+                  whileHover={{
+                    scale: 1.01,
+                    transition: { duration: 0.2 },
+                  }}
+                  className="bg-[#0a0a0a] border border-white/10 hover:border-green-500/30 rounded-lg p-4 transition-all duration-300"
+                >
                   <div className="flex items-start gap-4 cursor-pointer">
                     <Avatar className="h-10 w-10 border border-white/20 flex-shrink-0">
                       <AvatarImage src={activity.user.avatar || "/placeholder.svg"} />
@@ -306,9 +308,9 @@ export default function RecentActivitiesSection() {
                         <ExternalLink className="h-4 w-4 text-white/30 group-hover:text-green-400 transition-colors" />
                       </div>
                     </div>
-                  </div>
-                </Link>
-              </motion.div>
+                </div>
+                </motion.div>
+              </Link>
             ))}
           </motion.div>
 

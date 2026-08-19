@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useEffect, useMemo } from "react"
+import { useState, useRef, useEffect } from "react"
 import { motion, useAnimation, useInView } from "framer-motion"
 import { ArrowRight, Check, HelpCircle, Vote } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -15,20 +15,38 @@ export default function QuadraticFundingSection() {
   const isInView = useInView(sectionRef, { once: true, amount: 0.2 })
   const controls = useAnimation()
 
-  // Memoize particle configurations to prevent recalculation
-  const particleConfigs = useMemo(() => {
-    return Array.from({ length: 8 }, (_, i) => ({
-      id: i,
-      initialX: Math.random() * 100 - 50,
-      initialY: Math.random() * 100,
-      animateX: Math.random() * 100 - 50,
-      animateY: Math.random() * 100,
-      offsetX: Math.random() * 200 - 100,
-      offsetY: Math.random() * 200,
-      duration: 15 + Math.random() * 10,
-      delay: i * 0.8,
-      size: i % 3 === 0 ? "h-3 w-3" : i % 3 === 1 ? "h-4 w-4" : "h-2 w-2",
-    }))
+  // Particle configurations are seeded once after mount — useMemo would still
+  // run during SSR, producing values that disagree with hydration.
+  const [particleConfigs, setParticleConfigs] = useState<
+    {
+      id: number
+      initialX: number
+      initialY: number
+      animateX: number
+      animateY: number
+      offsetX: number
+      offsetY: number
+      duration: number
+      delay: number
+      size: string
+    }[]
+  >([])
+
+  useEffect(() => {
+    setParticleConfigs(
+      Array.from({ length: 8 }, (_, i) => ({
+        id: i,
+        initialX: Math.random() * 100 - 50,
+        initialY: Math.random() * 100,
+        animateX: Math.random() * 100 - 50,
+        animateY: Math.random() * 100,
+        offsetX: Math.random() * 200 - 100,
+        offsetY: Math.random() * 200,
+        duration: 15 + Math.random() * 10,
+        delay: i * 0.8,
+        size: i % 3 === 0 ? "h-3 w-3" : i % 3 === 1 ? "h-4 w-4" : "h-2 w-2",
+      })),
+    )
   }, [])
 
   useEffect(() => {

@@ -57,6 +57,24 @@ export default function FAQSection() {
   const isInView = useInView(sectionRef, { once: true, amount: 0.2 })
   const controls = useAnimation()
 
+  // Floating particles — seeded once after mount so SSR/hydration stay deterministic
+  const [particles, setParticles] = useState<
+    { id: number; x0: string; y0: string; x1: string; y1: string; duration: number }[]
+  >([])
+
+  useEffect(() => {
+    setParticles(
+      Array.from({ length: 10 }, (_, i) => ({
+        id: i,
+        x0: `${Math.random() * 100 - 50}%`,
+        y0: `${Math.random() * 100}%`,
+        x1: `calc(${Math.random() * 100 - 50}% + ${Math.random() * 200 - 100}px)`,
+        y1: `calc(${Math.random() * 100}% - ${Math.random() * 200}px)`,
+        duration: 10 + Math.random() * 20,
+      })),
+    )
+  }, [])
+
   useEffect(() => {
     if (isInView) {
       controls.start("visible")
@@ -94,28 +112,28 @@ export default function FAQSection() {
 
       {/* Floating particles */}
       {isInView &&
-        Array.from({ length: 10 }).map((_, i) => (
+        particles.map((particle) => (
           <motion.div
-            key={i}
+            key={particle.id}
             className={cn(
               "absolute rounded-full bg-green-500/20",
-              i % 3 === 0 ? "h-3 w-3" : i % 3 === 1 ? "h-5 w-5" : "h-2 w-2",
+              particle.id % 3 === 0 ? "h-3 w-3" : particle.id % 3 === 1 ? "h-5 w-5" : "h-2 w-2",
             )}
             initial={{
-              x: Math.random() * 100 - 50 + "%",
-              y: Math.random() * 100 + "%",
+              x: particle.x0,
+              y: particle.y0,
               opacity: 0,
             }}
             animate={{
-              x: `calc(${Math.random() * 100 - 50}% + ${Math.random() * 200 - 100}px)`,
-              y: `calc(${Math.random() * 100}% - ${Math.random() * 200}px)`,
+              x: particle.x1,
+              y: particle.y1,
               opacity: [0, 0.7, 0],
               scale: [0, 1, 0],
             }}
             transition={{
-              duration: 10 + Math.random() * 20,
+              duration: particle.duration,
               repeat: Number.POSITIVE_INFINITY,
-              delay: i * 0.5,
+              delay: particle.id * 0.5,
               ease: "easeInOut",
             }}
           />

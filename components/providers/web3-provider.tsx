@@ -17,7 +17,7 @@ interface Web3ContextType {
   address: string | null
   chainType: ChainType | null
   balance: string
-  connectWallet: (chainType: ChainType) => Promise<void>
+  connectWallet: (chainType: ChainType) => Promise<string>
   disconnectWallet: () => void
   switchChain: (chainType: ChainType) => Promise<void>
   pptBalance: number
@@ -28,7 +28,7 @@ const Web3Context = createContext<Web3ContextType>({
   address: null,
   chainType: null,
   balance: "0",
-  connectWallet: async () => {},
+  connectWallet: async () => "",
   disconnectWallet: () => {},
   switchChain: async () => {},
   pptBalance: 0,

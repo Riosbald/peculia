@@ -194,7 +194,7 @@ export default function TokenSimulator() {
       setTokenData((prevData) => ({
         ...prevData,
         [parent]: {
-          ...prevData[parent as keyof TokenData],
+          ...(prevData[parent as keyof TokenData] as Record<string, unknown>),
           [child]: value,
         },
       }))

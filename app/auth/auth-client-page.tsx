@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Eye, EyeOff, Github, Mail, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -18,6 +18,25 @@ export default function AuthClientPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [currentStep, setCurrentStep] = useState(1)
+
+  // Background dots are seeded once after mount — randomness during render
+  // would crash SSR (window is undefined) and break hydration.
+  const [particles, setParticles] = useState<
+    { id: number; x0: number; y0: number; x1: number; y1: number; duration: number }[]
+  >([])
+
+  useEffect(() => {
+    setParticles(
+      Array.from({ length: 50 }, (_, i) => ({
+        id: i,
+        x0: Math.random() * window.innerWidth,
+        y0: Math.random() * window.innerHeight,
+        x1: Math.random() * window.innerWidth,
+        y1: Math.random() * window.innerHeight,
+        duration: Math.random() * 20 + 10,
+      })),
+    )
+  }, [])
 
   const [loginData, setLoginData] = useState({
     email: "",
@@ -64,20 +83,14 @@ export default function AuthClientPage() {
       {/* Animated background */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-br from-[#10b981]/5 via-transparent to-purple-500/5" />
-        {[...Array(50)].map((_, i) => (
+        {particles.map((particle) => (
           <motion.div
-            key={i}
+            key={particle.id}
             className="absolute w-1 h-1 bg-white/20 rounded-full"
-            initial={{
-              x: Math.random() * window.innerWidth,
-              y: Math.random() * window.innerHeight,
-            }}
-            animate={{
-              x: Math.random() * window.innerWidth,
-              y: Math.random() * window.innerHeight,
-            }}
+            initial={{ x: particle.x0, y: particle.y0 }}
+            animate={{ x: particle.x1, y: particle.y1 }}
             transition={{
-              duration: Math.random() * 20 + 10,
+              duration: particle.duration,
               repeat: Number.POSITIVE_INFINITY,
               repeatType: "reverse",
             }}

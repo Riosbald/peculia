@@ -10,8 +10,19 @@ import PredictionCard from "@/components/prediction-markets/prediction-card"
 import ParticleBackground from "@/components/ui/particle-background"
 import CreatePredictionModal from "@/components/prediction-markets/create-prediction-modal"
 
+type WizkidPrediction = {
+  id: string
+  title: string
+  type: "public" | "private" | "invite-only"
+  amount: number
+  daysLeft: number
+  participants: { id: string; name: string; avatar: string }[]
+  category: string
+  backgroundColor: string
+}
+
 // Mock data for Wizkid predictions
-const wizkidPredictions = [
+const wizkidPredictions: WizkidPrediction[] = [
   {
     id: "w1",
     title: "Will Wizkid release a new album before the end of 2023?",
