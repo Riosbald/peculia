@@ -32,7 +32,7 @@ import { useRouter } from "next/navigation"
 import { toast } from "@/components/ui/use-toast"
 
 type ProposalType = "all" | "active" | "completed" | "upcoming"
-type ProposalCategory = "all" | "platform" | "treasury" | "grants" | "protocol" | "community"
+type ProposalCategory = "all" | "platform" | "treasury" | "grants" | "protocol" | "community" | "governance"
 
 interface Proposal {
   id: string

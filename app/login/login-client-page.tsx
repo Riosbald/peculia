@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { ChevronLeft, Eye, EyeOff, Loader2 } from "lucide-react"
@@ -53,14 +53,22 @@ export default function LoginClientPage() {
     }
   }
 
-  // Animated background elements
-  const circles = Array.from({ length: 5 }).map((_, i) => ({
-    id: i,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    size: Math.random() * 300 + 100,
-    duration: Math.random() * 20 + 10,
-  }))
+  // Animated background elements — seeded after mount so SSR/hydration stay deterministic
+  const [circles, setCircles] = useState<
+    { id: number; x: number; y: number; size: number; duration: number }[]
+  >([])
+
+  useEffect(() => {
+    setCircles(
+      Array.from({ length: 5 }, (_, i) => ({
+        id: i,
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        size: Math.random() * 300 + 100,
+        duration: Math.random() * 20 + 10,
+      })),
+    )
+  }, [])
 
   return (
     <div className="min-h-screen pt-16 sm:pt-20 pb-12 sm:pb-16 flex items-center justify-center relative overflow-hidden">

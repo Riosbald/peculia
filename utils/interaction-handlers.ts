@@ -1,5 +1,5 @@
 import type React from "react"
-import { toast } from "@/hooks/use-toast"
+import { toast } from "@/components/ui/use-toast"
 
 export interface InteractionHandlers {
   handleLike: (id: string, title: string, e: React.MouseEvent) => void

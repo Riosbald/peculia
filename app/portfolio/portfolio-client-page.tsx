@@ -173,26 +173,32 @@ export default function PortfolioClientPage() {
   const [activeTab, setActiveTab] = useState("overview")
   const [animateCharts, setAnimateCharts] = useState(false)
   const [showParticles, setShowParticles] = useState(false)
+  const [particles, setParticles] = useState<
+    { id: number; x: number; y: number; size: number; duration: number }[]
+  >([])
 
-  // Trigger animations after component mounts
+  // Trigger animations after component mounts; particles are seeded here
+  // (post-mount) so SSR/hydration stay deterministic.
   useEffect(() => {
     const timer1 = setTimeout(() => setAnimateCharts(true), 500)
-    const timer2 = setTimeout(() => setShowParticles(true), 1000)
+    const timer2 = setTimeout(() => {
+      setParticles(
+        Array.from({ length: 30 }, (_, i) => ({
+          id: i,
+          x: Math.random() * 100,
+          y: Math.random() * 100,
+          size: Math.random() * 3 + 1,
+          duration: Math.random() * 20 + 10,
+        })),
+      )
+      setShowParticles(true)
+    }, 1000)
 
     return () => {
       clearTimeout(timer1)
       clearTimeout(timer2)
     }
   }, [])
-
-  // Particle animation for background
-  const particles = Array.from({ length: 30 }).map((_, i) => ({
-    id: i,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    size: Math.random() * 3 + 1,
-    duration: Math.random() * 20 + 10,
-  }))
 
   return (
     <div className="min-h-screen pt-20 pb-16 bg-black relative overflow-hidden">

@@ -6,10 +6,15 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,md,json,css,mjs}\"",
+    "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,md,json,css,mjs}\"",
     "start": "next start"
   },
   "dependencies": {
     "@emotion/is-prop-valid": "latest",
+    "@fontsource/inter": "^5",
+    "@fontsource/space-mono": "^5",
     "@hookform/resolvers": "^3.9.1",
     "@nextui-org/react": "latest",
     "@radix-ui/react-accordion": "1.2.2",
@@ -58,21 +63,26 @@
     "react-dom": "^19",
     "react-hook-form": "^7.54.1",
     "react-resizable-panels": "^2.1.7",
-    "react-spring": "latest",
-    "recharts": "latest",
+    "react-spring": "^10.0.3",
+    "recharts": "^2.15.4",
     "sonner": "^1.7.1",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
-    "types": "latest",
     "vaul": "^0.9.6",
     "zod": "^3.24.1"
   },
   "devDependencies": {
     "@types/node": "^22",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "14.2.25",
     "postcss": "^8.5",
+    "prettier": "^3.5.0",
+    "prettier-plugin-tailwindcss": "^0.6.11",
     "tailwindcss": "^3.4.17",
-    "typescript": "^5"
+    "typescript": "^5.7.3"
   }
 }

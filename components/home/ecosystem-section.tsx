@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useCallback, useMemo } from "react"
+import React, { useState, useCallback, useMemo, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -253,30 +253,44 @@ const getColorClasses = (color: string) => {
   return colorMap[color as keyof typeof colorMap] || colorMap.emerald
 }
 
-const FloatingParticles = React.memo(() => (
-  <div className="absolute inset-0 overflow-hidden pointer-events-none">
-    {Array.from({ length: 8 }).map((_, i) => (
-      <motion.div
-        key={i}
-        className="absolute w-1 h-1 bg-white/20 rounded-full"
-        initial={{
-          x: Math.random() * window.innerWidth,
-          y: Math.random() * window.innerHeight,
-        }}
-        animate={{
-          x: Math.random() * window.innerWidth,
-          y: Math.random() * window.innerHeight,
-        }}
-        transition={{
-          duration: Math.random() * 10 + 10,
-          repeat: Number.POSITIVE_INFINITY,
-          repeatType: "reverse",
-          ease: "linear",
-        }}
-      />
-    ))}
-  </div>
-))
+const FloatingParticles = React.memo(() => {
+  // Seeded after mount: window access during render breaks SSR/hydration.
+  const [particles, setParticles] = useState<
+    { id: number; x0: number; y0: number; x1: number; y1: number; duration: number }[]
+  >([])
+
+  useEffect(() => {
+    setParticles(
+      Array.from({ length: 8 }, (_, i) => ({
+        id: i,
+        x0: Math.random() * window.innerWidth,
+        y0: Math.random() * window.innerHeight,
+        x1: Math.random() * window.innerWidth,
+        y1: Math.random() * window.innerHeight,
+        duration: Math.random() * 10 + 10,
+      })),
+    )
+  }, [])
+
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {particles.map((particle) => (
+        <motion.div
+          key={particle.id}
+          className="absolute w-1 h-1 bg-white/20 rounded-full"
+          initial={{ x: particle.x0, y: particle.y0 }}
+          animate={{ x: particle.x1, y: particle.y1 }}
+          transition={{
+            duration: particle.duration,
+            repeat: Number.POSITIVE_INFINITY,
+            repeatType: "reverse",
+            ease: "linear",
+          }}
+        />
+      ))}
+    </div>
+  )
+})
 
 FloatingParticles.displayName = "FloatingParticles"
 

@@ -1,7 +1,8 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useEffect, useRef } from "react"
 import { motion } from "framer-motion"
+import { cn } from "@/lib/utils"
 
 interface ParticleBackgroundProps {
   color?: string
@@ -9,6 +10,11 @@ interface ParticleBackgroundProps {
   speed?: number
   density?: number
   glowIntensity?: number
+  className?: string
+  quantity?: number
+  particleColor?: string
+  minSize?: number
+  maxSize?: number
 }
 
 export default function ParticleBackground({
@@ -17,9 +23,15 @@ export default function ParticleBackground({
   speed = 1,
   density = 150,
   glowIntensity = 0.5,
+  className,
+  quantity,
+  particleColor,
+  minSize = 0.5,
+  maxSize = 3,
 }: ParticleBackgroundProps) {
+  const resolvedColor = particleColor ?? color
+  const resolvedCount = quantity ?? count
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
 
   useEffect(() => {
     if (!canvasRef.current) return
@@ -35,7 +47,6 @@ export default function ParticleBackground({
       const { width, height } = canvas.parentElement.getBoundingClientRect()
       canvas.width = width
       canvas.height = height
-      setDimensions({ width, height })
     }
 
     updateSize()
@@ -54,11 +65,11 @@ export default function ParticleBackground({
       connectRadius: number
     }[] = []
 
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < resolvedCount; i++) {
       particles.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        radius: Math.random() * 2.5 + 0.5,
+        radius: Math.random() * (maxSize - minSize) + minSize,
         speedX: (Math.random() - 0.5) * 0.4 * speed,
         speedY: (Math.random() - 0.5) * 0.4 * speed,
         opacity: Math.random() * 0.5 + 0.1,
@@ -89,7 +100,7 @@ export default function ParticleBackground({
 
             // Calculate opacity based on distance
             const opacity = (1 - distance / particles[i].connectRadius) * 0.2
-            ctx.strokeStyle = `${color}${Math.floor(opacity * 255)
+            ctx.strokeStyle = `${resolvedColor}${Math.floor(opacity * 255)
               .toString(16)
               .padStart(2, "0")}`
             ctx.lineWidth = 0.8
@@ -117,7 +128,7 @@ export default function ParticleBackground({
         // Draw particle
         ctx.beginPath()
         ctx.arc(particle.x, particle.y, particle.radius * pulseFactor, 0, Math.PI * 2)
-        ctx.fillStyle = `${color}${Math.floor(particle.opacity * 255)
+        ctx.fillStyle = `${resolvedColor}${Math.floor(particle.opacity * 255)
           .toString(16)
           .padStart(2, "0")}`
         ctx.fill()
@@ -125,7 +136,7 @@ export default function ParticleBackground({
         // Add glow effect
         ctx.beginPath()
         ctx.arc(particle.x, particle.y, particle.radius * 2 * pulseFactor, 0, Math.PI * 2)
-        ctx.fillStyle = `${color}${Math.floor(particle.opacity * 70 * glowIntensity)
+        ctx.fillStyle = `${resolvedColor}${Math.floor(particle.opacity * 70 * glowIntensity)
           .toString(16)
           .padStart(2, "0")}`
         ctx.fill()
@@ -140,12 +151,12 @@ export default function ParticleBackground({
       window.removeEventListener("resize", updateSize)
       cancelAnimationFrame(animationFrameId)
     }
-  }, [color, count, speed, density, glowIntensity])
+  }, [resolvedColor, resolvedCount, speed, density, glowIntensity, minSize, maxSize])
 
   return (
     <motion.canvas
       ref={canvasRef}
-      className="absolute inset-0 z-0"
+      className={cn("absolute inset-0 z-0", className)}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}

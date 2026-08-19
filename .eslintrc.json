@@ -1,0 +1,19 @@
+{
+  "root": true,
+  "extends": ["next/core-web-vitals", "plugin:@typescript-eslint/recommended"],
+  "rules": {
+    "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+    "@typescript-eslint/no-explicit-any": "warn",
+    "react-hooks/exhaustive-deps": "warn",
+    "react/no-unescaped-entities": "off",
+    "@next/next/no-img-element": "warn",
+    "no-console": ["warn", { "allow": ["warn", "error"] }],
+    "no-restricted-syntax": [
+      "warn",
+      {
+        "selector": "CallExpression[callee.object.name='Math'][callee.property.name='random']",
+        "message": "Prefer effect-scoped or canvas-scoped randomness; Math.random() during render breaks SSR hydration."
+      }
+    ]
+  }
+}
